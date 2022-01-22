@@ -29,8 +29,6 @@ Patch4:        emacs-libdir-vs-systemd.patch
 Patch5:        https://lists.gnu.org/archive/html/bug-gnu-emacs/2021-04/txt0tY7uKvJKS.txt#./emacs-modula2.patch
 # cherry picked from 216c65b135c2b0be7e048cdc6683873b03b99b9a
 Patch6:        Use-a-64KB-page-size-for-pdump.patch
-# cherry picked from f97e07ea807cc6d38774a3888a15091b20645ac
-Patch7:        0001-Port-alternate-signal-stack-to-upcoming-glibc-2.34.patch
 
 BuildRequires: gcc
 BuildRequires: atk-devel
@@ -200,7 +198,6 @@ Development header files for Emacs.
 %patch4 -p1 -b .libdir-vs-systemd
 %patch5 -p1
 %patch6 -p1
-%patch7 -p1
 autoconf
 
 grep -v "tetris.elc" lisp/Makefile.in > lisp/Makefile.in.new \
