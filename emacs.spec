@@ -6,7 +6,7 @@ Name:          emacs
 Epoch:         1
 Version:       27.2
 Release:       10%{?dist}
-License:       GPLv3+ and CC0-1.0
+License:       GPLv3+ and CC0
 URL:           http://www.gnu.org/software/emacs/
 Source0:       https://ftp.gnu.org/gnu/emacs/emacs-%{version}.tar.xz
 Source1:       https://ftp.gnu.org/gnu/emacs/emacs-%{version}.tar.xz.sig
