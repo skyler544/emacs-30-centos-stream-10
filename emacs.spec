@@ -5,7 +5,7 @@ Summary:       GNU Emacs text editor
 Name:          emacs
 Epoch:         1
 Version:       28.1
-Release:       1%{?dist}
+Release:       2%{?dist}
 License:       GPLv3+ and CC0
 URL:           http://www.gnu.org/software/emacs/
 Source0:       https://ftp.gnu.org/gnu/emacs/emacs-%{version}.tar.xz
@@ -153,6 +153,11 @@ Requires:      %{name}-filesystem = %{epoch}:%{version}-%{release}
 Recommends:    enchant2
 Provides:      %{name}-el = %{epoch}:%{version}-%{release}
 Obsoletes:     emacs-el < 1:24.3-29
+# transient.el is provided by emacs in lisp/transient.el
+Provides:      emacs-transient = 0.3.7
+# the existing emacs-transient package is obsoleted by emacs 28+, last package
+# version as of the release of emacs 28.1 is obsoleted
+Obsoletes:     emacs-transient < 0.3.0-4
 
 %description common
 Emacs is a powerful, customizable, self-documenting, modeless text
@@ -507,6 +512,9 @@ desktop-file-validate %{buildroot}/%{_datadir}/applications/*.desktop
 %{_includedir}/emacs-module.h
 
 %changelog
+* Thu Jul 14 2022 Dan Čermák <dan.cermak@cgc-instruments.com> - 1:28.1-2
+- Obsolete emacs-transient to prevent update issues, fixes rhbz#2107269
+
 * Mon Apr  4 2022 Bhavin Gandhi <bhavin7392@gmail.com> - 1:28.1-1
 - emacs-28.1 is available, fixes rhbz#2071638
 - Build with Native Compilation support and natively compile all .el files
