@@ -199,7 +199,7 @@ Development header files for Emacs.
 %setup -q
 
 # workaround for ftbfs on ppc64, see https://bugzilla.redhat.com/show_bug.cgi?id=2045780#c8
-mv %{SOURCE3} lib/
+cp -p %{SOURCE3} lib/
 
 %patch1 -p1 -b .spellchecker
 %patch2 -p1 -b .system-crypto-policies
@@ -277,7 +277,7 @@ ln -s ../configure .
 LDFLAGS=-Wl,-z,relro;  export LDFLAGS;
 
 %configure --with-dbus --with-gif --with-jpeg --with-png --with-rsvg \
-           --with-tiff --with-xft --with-xpm --with-x-toolkit=gtk3 --with-gpm=no \
+           --with-tiff --with-xpm --with-x-toolkit=gtk3 --with-gpm=no \
            --with-xwidgets --with-modules --with-harfbuzz --with-cairo --with-json \
            --with-native-compilation
 %{setarch} %make_build bootstrap NATIVE_FULL_AOT=1
