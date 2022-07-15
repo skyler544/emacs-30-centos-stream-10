@@ -194,7 +194,7 @@ Development header files for Emacs.
 %setup -q
 
 # workaround for ftbfs on ppc64, see https://bugzilla.redhat.com/show_bug.cgi?id=2045780#c8
-mv %{SOURCE3} lib/
+cp -p %{SOURCE3} lib/
 
 %patch1 -p1 -b .spellchecker
 %patch2 -p1 -b .system-crypto-policies
