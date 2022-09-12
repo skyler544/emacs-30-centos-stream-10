@@ -1,7 +1,7 @@
-From e81f1faca4382ed5c8f15fec84fb7c900a5468f9 Mon Sep 17 00:00:00 2001
+From 31607778ef262e5c25a65eb479f9531c5803f4a6 Mon Sep 17 00:00:00 2001
 From: Glenn Morris <rgm@gnu.org>
 Date: Mon, 11 Oct 2021 14:03:26 +0200
-Subject: Make the installed pmdp file use a fingerprint
+Subject: [PATCH] Make the installed pmdp file use a fingerprint
 
 * Makefile.in (EMACS_PDMP): Use --fingerprint.
 
@@ -23,10 +23,10 @@ pdmp file (bug#42790).
  5 files changed, 40 insertions(+), 4 deletions(-)
 
 diff --git a/Makefile.in b/Makefile.in
-index 5fc1edc..c6c507f 100644
+index c902b46ced..f8b8058d96 100644
 --- a/Makefile.in
 +++ b/Makefile.in
-@@ -313,6 +313,7 @@ TRANSFORM = @program_transform_name@
+@@ -313,6 +313,7 @@ TRANSFORM =
  EMACS_NAME = `echo emacs | sed '$(TRANSFORM)'`
  EMACS = ${EMACS_NAME}${EXEEXT}
  EMACSFULL = `echo emacs-${version} | sed '$(TRANSFORM)'`${EXEEXT}
@@ -34,7 +34,7 @@ index 5fc1edc..c6c507f 100644
  
  # Subdirectories to make recursively.
  SUBDIR = $(NTDIR) lib lib-src src lisp
-@@ -521,7 +522,7 @@ install-arch-dep: src install-arch-indep install-etcdoc install-$(NTDIR)
+@@ -521,7 +522,7 @@ install-arch-dep:
  ifeq (${ns_self_contained},no)
  	${INSTALL_PROGRAM} $(INSTALL_STRIP) src/emacs${EXEEXT} "$(DESTDIR)${bindir}/$(EMACSFULL)"
  ifeq (${DUMPING},pdumper)
@@ -44,10 +44,10 @@ index 5fc1edc..c6c507f 100644
  	-chmod 755 "$(DESTDIR)${bindir}/$(EMACSFULL)"
  ifndef NO_BIN_LINK
 diff --git a/doc/emacs/cmdargs.texi b/doc/emacs/cmdargs.texi
-index d5177fa..313682b 100644
+index ffab2b2213..b3f84098e7 100644
 --- a/doc/emacs/cmdargs.texi
 +++ b/doc/emacs/cmdargs.texi
-@@ -185,6 +185,11 @@ successfully.
+@@ -185,6 +185,11 @@ Action Arguments
  @item --version
  @opindex --version
  Print Emacs version, then exit successfully.
@@ -60,10 +60,10 @@ index d5177fa..313682b 100644
  
  @node Initial Options
 diff --git a/src/emacs.c b/src/emacs.c
-index 866e43f..cda7a9b 100644
+index 0a90b0913b..1907065a95 100644
 --- a/src/emacs.c
 +++ b/src/emacs.c
-@@ -133,6 +133,7 @@ extern char etext;
+@@ -133,6 +133,7 @@ #define MAIN_PROGRAM
  #endif
  
  #include "pdumper.h"
@@ -71,7 +71,7 @@ index 866e43f..cda7a9b 100644
  #include "epaths.h"
  
  static const char emacs_version[] = PACKAGE_VERSION;
-@@ -255,6 +256,7 @@ Initialization options:\n\
+@@ -255,6 +256,7 @@ #define MAIN_PROGRAM
  #ifdef HAVE_PDUMPER
      "\
  --dump-file FILE            read dumped state from FILE\n\
@@ -113,9 +113,9 @@ index 866e43f..cda7a9b 100644
 +  sprintf (dump_file, "%s%c%s-%s%s",
 +           path_exec, DIRECTORY_SEP, argv0_base, hexbuf, suffix);
  #if !defined (NS_SELF_CONTAINED)
-   /* Assume the Emacs binary lives in a sibling directory as set up by
-      the default installation configuration.  */
-@@ -1387,6 +1397,23 @@ main (int argc, char **argv)
+   if (!(emacs_executable && *emacs_executable))
+     {
+@@ -1424,6 +1434,23 @@ main (int argc, char **argv)
        exit (0);
      }
  
@@ -140,7 +140,7 @@ index 866e43f..cda7a9b 100644
  #ifdef HAVE_PDUMPER
    if (dumped_with_pdumper_p ())
 diff --git a/src/pdumper.c b/src/pdumper.c
-index 11c680d..977f4fb 100644
+index b0167299d7..56a5e2ec6d 100644
 --- a/src/pdumper.c
 +++ b/src/pdumper.c
 @@ -312,7 +312,7 @@ dump_reloc_set_offset (struct dump_reloc *reloc, dump_off offset)
@@ -153,10 +153,10 @@ index 11c680d..977f4fb 100644
  		  unsigned char const xfingerprint[sizeof fingerprint])
  {
 diff --git a/src/pdumper.h b/src/pdumper.h
-index deec9af..bc339c4 100644
+index 8383283894..002e1d88ce 100644
 --- a/src/pdumper.h
 +++ b/src/pdumper.h
-@@ -50,6 +50,9 @@ enum { PDUMPER_NO_OBJECT = -1 };
+@@ -50,6 +50,9 @@ #define PDUMPER_IGNORE(thing) ((void) &(thing))
  #define PDUMPER_REMEMBER_SCALAR(thing)                  \
    pdumper_remember_scalar (&(thing), sizeof (thing))
  
@@ -167,5 +167,5 @@ index deec9af..bc339c4 100644
  
  INLINE void
 -- 
-cgit v1.1
+2.37.3
 
