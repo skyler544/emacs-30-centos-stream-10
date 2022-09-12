@@ -4,8 +4,8 @@
 Summary:       GNU Emacs text editor
 Name:          emacs
 Epoch:         1
-Version:       28.1
-Release:       4%{?dist}
+Version:       28.2
+Release:       1%{?dist}
 License:       GPLv3+ and CC0
 URL:           http://www.gnu.org/software/emacs/
 Source0:       https://ftp.gnu.org/gnu/emacs/emacs-%{version}.tar.xz
@@ -516,6 +516,9 @@ desktop-file-validate %{buildroot}/%{_datadir}/applications/*.desktop
 %{_includedir}/emacs-module.h
 
 %changelog
+* Tue Nov  1 2022 Dan Čermák <dan.cermak@cgc-instruments.com> - 1:28.2-1
+- New upstream release 28.2, fixes rhbz#2126048
+
 * Fri Dec 23 2022 Florian Weimer <fweimer@redhat.com> - 1:28.1-4
 - C99 compatibility fixes for the configure script
 
