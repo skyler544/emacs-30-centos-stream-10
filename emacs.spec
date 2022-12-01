@@ -436,6 +436,10 @@ echo %{native_lisp}/${gtk_comp_native_ver} >> gtk-filelist
 echo %{native_lisp}/${lucid_comp_native_ver} >> lucid-filelist
 echo %{native_lisp}/${nox_comp_native_ver} >> nox-filelist
 
+# remove exec permissions from eln files to prevent the debuginfo extractor from
+# trying to extract debuginfo from them
+find %{buildroot}%{_libdir}/ -name '*eln' -type f | xargs chmod -x
+
 %check
 appstream-util validate-relax --nonet %{buildroot}/%{_metainfodir}/*.metainfo.xml
 desktop-file-validate %{buildroot}/%{_datadir}/applications/*.desktop
