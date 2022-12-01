@@ -22,6 +22,8 @@ Source8:       emacs-terminal.sh
 # rhbz#713600
 Patch1:        emacs-spellchecker.patch
 Patch2:        emacs-system-crypto-policies.patch
+# causes a dependency on pkgconfig(systemd)
+# => remove it if we stop using this patch
 Patch3:        emacs-libdir-vs-systemd.patch
 Patch4:        emacs-pdmp-fingerprint.patch
 Patch5:        emacs-configure-c99-1.patch
@@ -79,6 +81,9 @@ BuildRequires: gnupg2
 
 # For lucid
 BuildRequires: Xaw3d-devel
+
+# for Patch3
+BuildRequires: pkgconfig(systemd)
 
 %ifarch %{ix86}
 BuildRequires: util-linux
