@@ -30,6 +30,9 @@ Patch5:        emacs-configure-c99-1.patch
 Patch6:        emacs-configure-c99-2.patch
 # CVE-2022-45939
 Patch7:        https://git.savannah.gnu.org/cgit/emacs.git/patch/?id=d48bb4874bc6cd3e69c7a15fc3c91cc141025c51#./fixed-ctags-local-command-execute-vulnerability.patch
+# https://debbugs.gnu.org/cgi/bugreport.cgi?bug=60208
+# backport of https://git.savannah.gnu.org/cgit/emacs.git/patch/?id=e59216d3be86918b995bd63273c851ebc6176a83
+Patch8:        native-compile-with_-Q.patch
 
 BuildRequires: gcc
 BuildRequires: atk-devel
@@ -216,6 +219,7 @@ cp -p %{SOURCE3} lib/
 %patch5 -p1
 %patch6 -p1
 %patch7 -p1 -b .ctags-local-execution-cve
+%patch8 -p1 -b .native-compile-Q
 autoconf
 
 grep -v "tetris.elc" lisp/Makefile.in > lisp/Makefile.in.new \
@@ -530,6 +534,7 @@ desktop-file-validate %{buildroot}/%{_datadir}/applications/*.desktop
 * Tue Nov  1 2022 Dan Čermák <dan.cermak@cgc-instruments.com> - 1:28.2-1
 - New upstream release 28.2, fixes rhbz#2126048
 - Add patch to fix CVE-2022-45939, fixes rhbz#2149381
+- spawn native-compilation processes with -Q rhbz#2155824 (petersen)
 
 * Fri Dec 23 2022 Florian Weimer <fweimer@redhat.com> - 1:28.1-4
 - C99 compatibility fixes for the configure script

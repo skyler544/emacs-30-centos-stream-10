@@ -1,0 +1,22 @@
+--- emacs-28.2/lisp/emacs-lisp/comp.el~	2022-09-07 05:31:53.000000000 +0800
++++ emacs-28.2/lisp/emacs-lisp/comp.el	2022-12-23 15:02:25.446994014 +0800
+@@ -3706,7 +3706,7 @@
+               (if (zerop
+                    (call-process (expand-file-name invocation-name
+                                                    invocation-directory)
+-				 nil t t "--batch" "-l" temp-file))
++				 nil t t "-Q" "--batch" "-l" temp-file))
+                   (progn
+                     (delete-file temp-file)
+                     output)
+@@ -3976,7 +3976,7 @@
+                              :command (list
+                                        (expand-file-name invocation-name
+                                                          invocation-directory)
+-                                       "--batch" "-l" temp-file)
++                                       "-Q" "--batch" "-l" temp-file)
+                              :sentinel
+                              (lambda (process _event)
+                                (run-hook-with-args
+
+Diff finished.  Fri Dec 23 15:02:42 2022
