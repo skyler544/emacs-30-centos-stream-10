@@ -5,7 +5,7 @@ Summary:       GNU Emacs text editor
 Name:          emacs
 Epoch:         1
 Version:       28.2
-Release:       1%{?dist}
+Release:       2%{?dist}
 License:       GPLv3+ and CC0
 URL:           http://www.gnu.org/software/emacs/
 Source0:       https://ftp.gnu.org/gnu/emacs/emacs-%{version}.tar.xz
@@ -512,7 +512,10 @@ desktop-file-validate %{buildroot}/%{_datadir}/applications/*.desktop
 %dir %{_datadir}/emacs/%{version}
 %{_datadir}/emacs/%{version}/etc
 %{_datadir}/emacs/%{version}/site-lisp
-%{_libexecdir}/emacs
+%dir %{emacs_libexecdir}/
+%{emacs_libexecdir}/movemail
+%{emacs_libexecdir}/hexl
+%{emacs_libexecdir}/rcs2log
 %{_userunitdir}/emacs.service
 %attr(0644,root,root) %config(noreplace) %{_datadir}/emacs/site-lisp/default.el
 %attr(0644,root,root) %config %{_datadir}/emacs/site-lisp/site-start.el
@@ -531,6 +534,9 @@ desktop-file-validate %{buildroot}/%{_datadir}/applications/*.desktop
 %{_includedir}/emacs-module.h
 
 %changelog
+* Tue Jan 17 2023 Dan Čermák <dan.cermak@cgc-instruments.com> - 1:28.2-2
+- Don't include everything in %%emacs_libexecdir in common subpackage, fixes rhbz#2160550
+
 * Tue Nov  1 2022 Dan Čermák <dan.cermak@cgc-instruments.com> - 1:28.2-1
 - New upstream release 28.2, fixes rhbz#2126048
 - Add patch to fix CVE-2022-45939, fixes rhbz#2149381
