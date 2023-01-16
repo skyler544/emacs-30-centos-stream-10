@@ -507,7 +507,11 @@ desktop-file-validate %{buildroot}/%{_datadir}/applications/*.desktop
 %{_bindir}/emacsclient
 %{_bindir}/etags.emacs
 %{_bindir}/gctags
-%{_mandir}/*/*
+%{_mandir}/man1/ebrowse.1*
+%{_mandir}/man1/emacs.1*
+%{_mandir}/man1/emacsclient.1*
+%{_mandir}/man1/etags.emacs.1*
+%{_mandir}/man1/gctags.1*
 %{_infodir}/*
 %dir %{_datadir}/emacs/%{version}
 %{_datadir}/emacs/%{version}/etc
