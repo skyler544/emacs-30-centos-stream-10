@@ -424,13 +424,24 @@ cp -ar build-gtk/native-lisp/${gtk_comp_native_ver} %{buildroot}%{native_lisp}
 cp -ar build-lucid/native-lisp/${lucid_comp_native_ver} %{buildroot}%{native_lisp}
 cp -ar build-nox/native-lisp/${nox_comp_native_ver} %{buildroot}%{native_lisp}
 
-# List of binary specific files
-echo %{emacs_libexecdir}/${gtk_pdmp} > gtk-filelist
-echo %{emacs_libexecdir}/${lucid_pdmp} > lucid-filelist
-echo %{emacs_libexecdir}/${nox_pdmp} > nox-filelist
-echo %{native_lisp}/${gtk_comp_native_ver} >> gtk-filelist
-echo %{native_lisp}/${lucid_comp_native_ver} >> lucid-filelist
-echo %{native_lisp}/${nox_comp_native_ver} >> nox-filelist
+(TOPDIR=${PWD}
+ cd %{buildroot}
+ find .%{native_lisp}/${gtk_comp_native_ver} \( -type f -name '*eln' -fprintf $TOPDIR/gtk-eln-filelist "%%%%attr(755,-,-) %%p\n" \) -o \( -type d -fprintf $TOPDIR/gtk-dirs "%%%%dir %%p\n" \)
+)
+(TOPDIR=${PWD}
+ cd %{buildroot}
+ find .%{native_lisp}/${lucid_comp_native_ver} \( -type f -name '*eln' -fprintf $TOPDIR/lucid-eln-filelist "%%%%attr(755,-,-) %%p\n" \) -o \( -type d -fprintf $TOPDIR/lucid-dirs "%%%%dir %%p\n" \)
+)
+(TOPDIR=${PWD}
+ cd %{buildroot}
+ find .%{native_lisp}/${nox_comp_native_ver} \( -type f -name '*eln' -fprintf $TOPDIR/nox-eln-filelist "%%%%attr(755,-,-) %%p\n" \) -o \( -type d -fprintf $TOPDIR/nox-dirs "%%%%dir %%p\n" \)
+)
+echo %{emacs_libexecdir}/${gtk_pdmp} >> gtk-eln-filelist
+echo %{emacs_libexecdir}/${lucid_pdmp} >> lucid-eln-filelist
+echo %{emacs_libexecdir}/${nox_pdmp} >> nox-eln-filelist
+
+# remove leading . from filelists
+sed -i -e "s|\.%{native_lisp}|%{native_lisp}|" *-eln-filelist *-dirs
 
 # remove exec permissions from eln files to prevent the debuginfo extractor from
 # trying to extract debuginfo from them
@@ -469,7 +480,7 @@ desktop-file-validate %{buildroot}/%{_datadir}/applications/*.desktop
 %{_sbindir}/alternatives --install %{_bindir}/etags emacs.etags %{_bindir}/etags.emacs 80 \
        --slave %{_mandir}/man1/etags.1.gz emacs.etags.man %{_mandir}/man1/etags.emacs.1.gz || :
 
-%files -f gtk-filelist
+%files -f gtk-eln-filelist -f gtk-dirs
 %{_bindir}/emacs-%{version}
 %attr(0755,-,-) %ghost %{_bindir}/emacs
 %{_datadir}/applications/emacs.desktop
@@ -480,12 +491,12 @@ desktop-file-validate %{buildroot}/%{_datadir}/applications/*.desktop
 %{_datadir}/icons/hicolor/scalable/apps/emacs.ico
 %{_datadir}/icons/hicolor/scalable/mimetypes/emacs-document.svg
 
-%files lucid -f lucid-filelist
+%files lucid -f lucid-eln-filelist -f lucid-dirs
 %{_bindir}/emacs-%{version}-lucid
 %attr(0755,-,-) %ghost %{_bindir}/emacs
 %attr(0755,-,-) %ghost %{_bindir}/emacs-lucid
 
-%files nox -f nox-filelist
+%files nox -f nox-eln-filelist -f nox-dirs
 %{_bindir}/emacs-%{version}-nox
 %attr(0755,-,-) %ghost %{_bindir}/emacs
 %attr(0755,-,-) %ghost %{_bindir}/emacs-nox
@@ -531,6 +542,7 @@ desktop-file-validate %{buildroot}/%{_datadir}/applications/*.desktop
 %changelog
 * Tue Jan 17 2023 Dan Čermák <dan.cermak@cgc-instruments.com> - 1:28.2-2
 - Don't include everything in %%emacs_libexecdir in common subpackage, fixes rhbz#2160550
+- Don't remove exec permissions from eln files, fixes rhbz#2160547
 
 * Tue Nov  1 2022 Dan Čermák <dan.cermak@cgc-instruments.com> - 1:28.2-1
 - New upstream release 28.2, fixes rhbz#2126048
