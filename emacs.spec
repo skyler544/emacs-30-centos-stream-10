@@ -231,23 +231,6 @@ grep -v "pong.elc" lisp/Makefile.in > lisp/Makefile.in.new \
 rm -f lisp/play/tetris.el lisp/play/tetris.elc
 rm -f lisp/play/pong.el lisp/play/pong.el
 
-# Sorted list of info files
-%define info_files ada-mode auth autotype bovine calc ccmode cl dbus dired-x ebrowse ede ediff edt efaq-w32 efaq eieio eintr elisp emacs-gnutls emacs-mime emacs epa erc ert eshell eudc eww flymake forms gnus htmlfontify idlwave ido info mairix-el message mh-e newsticker nxml-mode octave-mode org pcl-cvs pgg rcirc reftex remember sasl sc semantic ses sieve smtpmail speedbar srecode todo-mode tramp url vhdl-mode vip viper widget wisent woman
-
-# Since the list of info files has to be maintained, check if all info files
-# from the upstream tarball are actually present in %%info_files.
-cd info
-fs=( $(ls *.info) )
-is=( %info_files  )
-files=$(echo ${fs[*]} | sed 's/\.info//'g | sort | tr -d '\n')
-for i in $(seq 0 $(( ${#fs[*]} - 1 ))); do
-  if test "${fs[$i]}" != "${is[$i]}.info"; then
-    echo Please update %%info_files: ${fs[$i]} != ${is[$i]}.info >&2
-    break
-  fi
-done
-cd ..
-
 %ifarch %{ix86}
 %define setarch setarch %{_arch} -R
 %else
@@ -406,6 +389,15 @@ rm -f *-filelist {common,el}-*-files
 
 )
 
+# Sorted list of info files
+%define info_files auth autotype bovine calc ccmode cl dbus dired-x ebrowse ede ediff edt efaq eieio eintr elisp emacs-gnutls emacs-mime emacs epa erc ert eshell eudc eww flymake forms gnus htmlfontify idlwave ido mairix-el message mh-e modus-themes newsticker nxml-mode octave-mode org pcl-cvs pgg rcirc reftex remember sasl sc semantic ses sieve smtpmail speedbar srecode todo-mode tramp transient url vhdl-mode vip viper widget wisent woman
+
+for info_f in %info_files; do
+    echo "%{_infodir}/${info_f}.info*" >> info-filelist
+done
+# info.gz is a rename of info.info.gz and thus needs special handling
+echo "%{_infodir}/info*" >> info-filelist
+
 # Put the lists together after filtering  ./usr to /usr
 sed -i -e "s|\.%{_prefix}|%{_prefix}|" *-files
 cat common-*-files > common-filelist
@@ -498,7 +490,7 @@ desktop-file-validate %{buildroot}/%{_datadir}/applications/*.desktop
 %attr(0755,-,-) %ghost %{_bindir}/emacs
 %attr(0755,-,-) %ghost %{_bindir}/emacs-nox
 
-%files common -f common-filelist -f el-filelist
+%files common -f common-filelist -f el-filelist -f info-filelist
 %config(noreplace) %{_sysconfdir}/skel/.emacs
 %{_rpmconfigdir}/macros.d/macros.emacs
 %license etc/COPYING
@@ -512,7 +504,6 @@ desktop-file-validate %{buildroot}/%{_datadir}/applications/*.desktop
 %{_mandir}/man1/emacsclient.1*
 %{_mandir}/man1/etags.emacs.1*
 %{_mandir}/man1/gctags.1*
-%{_infodir}/*
 %dir %{_datadir}/emacs/%{version}
 %{_datadir}/emacs/%{version}/etc
 %{_datadir}/emacs/%{version}/site-lisp
