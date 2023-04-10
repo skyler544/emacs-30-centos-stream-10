@@ -94,16 +94,13 @@ BuildRequires: util-linux
 %endif
 BuildRequires: make
 
-# Emacs requires info for info mode, rhbz#1989264
-Requires:      info
-# Emacs doesn't run without dejavu-sans-mono-fonts, rhbz#732422
-Requires:      desktop-file-utils
-Requires:      dejavu-sans-mono-fonts
-Requires:      libgccjit
+# Emacs doesn't run without a font, rhbz#732422
+Requires:      google-noto-sans-mono-vf-fonts
 Requires(preun): %{_sbindir}/alternatives
 Requires(posttrans): %{_sbindir}/alternatives
 Requires:      emacs-common = %{epoch}:%{version}-%{release}
 Provides:      emacs(bin) = %{epoch}:%{version}-%{release}
+Supplements:   ((libwayland-server or xorg-x11-server-Xorg) and emacs-common)
 
 %define site_lisp %{_datadir}/emacs/site-lisp
 %define site_start_d %{site_lisp}/site-start.d
@@ -122,7 +119,7 @@ This package provides an emacs binary with support for X windows.
 
 %package lucid
 Summary:       GNU Emacs text editor with LUCID toolkit X support
-Requires:      libgccjit
+Requires:      google-noto-sans-mono-vf-fonts
 Requires(preun): %{_sbindir}/alternatives
 Requires(posttrans): %{_sbindir}/alternatives
 Requires:      emacs-common = %{epoch}:%{version}-%{release}
@@ -139,7 +136,6 @@ using LUCID toolkit.
 
 %package nox
 Summary:       GNU Emacs text editor without X support
-Requires:      libgccjit
 Requires(preun): %{_sbindir}/alternatives
 Requires(posttrans): %{_sbindir}/alternatives
 Requires:      emacs-common = %{epoch}:%{version}-%{release}
@@ -162,7 +158,10 @@ License:       GPLv3+ and GFDL and BSD
 Requires(preun): %{_sbindir}/alternatives
 Requires(posttrans): %{_sbindir}/alternatives
 Requires:      %{name}-filesystem = %{epoch}:%{version}-%{release}
+Requires:      libgccjit
+Recommends:    (emacs or emacs-lucid or emacs-nox)
 Recommends:    enchant2
+Recommends:    info
 Provides:      %{name}-el = %{epoch}:%{version}-%{release}
 Obsoletes:     emacs-el < 1:24.3-29
 # transient.el is provided by emacs in lisp/transient.el
@@ -489,13 +488,6 @@ desktop-file-validate %{buildroot}/%{_datadir}/applications/*.desktop
 %files -f gtk-eln-filelist -f gtk-dirs
 %{_bindir}/emacs-%{version}
 %attr(0755,-,-) %ghost %{_bindir}/emacs
-%{_datadir}/applications/emacs.desktop
-%{_datadir}/applications/emacs-mail.desktop
-%{_metainfodir}/%{name}.metainfo.xml
-%{_datadir}/icons/hicolor/*/apps/emacs.png
-%{_datadir}/icons/hicolor/scalable/apps/emacs.svg
-%{_datadir}/icons/hicolor/scalable/apps/emacs.ico
-%{_datadir}/icons/hicolor/scalable/mimetypes/emacs-document.svg
 
 %files lucid -f lucid-eln-filelist -f lucid-dirs
 %{_bindir}/emacs-%{version}-lucid
@@ -516,6 +508,13 @@ desktop-file-validate %{buildroot}/%{_datadir}/applications/*.desktop
 %{_bindir}/emacsclient
 %{_bindir}/etags.emacs
 %{_bindir}/gctags
+%{_datadir}/applications/emacs.desktop
+%{_datadir}/applications/emacs-mail.desktop
+%{_metainfodir}/%{name}.metainfo.xml
+%{_datadir}/icons/hicolor/*/apps/emacs.png
+%{_datadir}/icons/hicolor/scalable/apps/emacs.svg
+%{_datadir}/icons/hicolor/scalable/apps/emacs.ico
+%{_datadir}/icons/hicolor/scalable/mimetypes/emacs-document.svg
 %{_mandir}/man1/ebrowse.1*
 %{_mandir}/man1/emacs.1*
 %{_mandir}/man1/emacsclient.1*
@@ -546,6 +545,11 @@ desktop-file-validate %{buildroot}/%{_datadir}/applications/*.desktop
 %{_includedir}/emacs-module.h
 
 %changelog
+* Mon Apr 10 2023 Peter Oliver <rpm@mavit.org.uk> - 1:28.2-5
+- Consolidate more files and requirements into the common subpackage.
+- Depend on google-noto-sans-mono-vf-fonts rather than
+  dejavu-sans-mono-fonts, since that's Fedora's default these days.
+
 * Fri Feb 10 2023 Michael Catanzaro <mcatanzaro@redhat.com> - 1:28.2-5
 - Use webkit2gtk-4.1
 
