@@ -235,7 +235,7 @@ grep -v "pong.elc" lisp/Makefile.in > lisp/Makefile.in.new \
 
 # Avoid trademark issues
 rm -f lisp/play/tetris.el lisp/play/tetris.elc
-rm -f lisp/play/pong.el lisp/play/pong.el
+rm -f lisp/play/pong.el lisp/play/pong.elc
 
 %ifarch %{ix86}
 %define setarch setarch %{_arch} -R
