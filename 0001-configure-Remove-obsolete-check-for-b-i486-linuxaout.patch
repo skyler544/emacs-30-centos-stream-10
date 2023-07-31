@@ -1,15 +1,23 @@
-Remove obsolete a.out linker test.  It contains an implicit
-function declaration, leading to false positives.
+From 123ece3c3313101048d43a5ef2f9bd66c4e97fb7 Mon Sep 17 00:00:00 2001
+From: Florian Weimer <fweimer@redhat.com>
+Date: Fri, 23 Dec 2022 18:49:25 +0100
+Subject: [PATCH] configure: Remove obsolete check for -b i486-linuxaout
 
-Submitted upstream:
+If there are still a.out system arounds, they shouldn't need this
+anymore because the toolchain has been fixed.
 
-  <https://lists.gnu.org/archive/html/emacs-devel/2022-12/msg01019.html>
+* configure.ac (emacs_cv_b_link): Remove obsolete check.
+
+(cherry picked from commit 6c1413d5ef0d1fea639b0d8c83a0c0065d99359b)
+---
+ configure.ac | 33 ---------------------------------
+ 1 file changed, 33 deletions(-)
 
 diff --git a/configure.ac b/configure.ac
-index 660784347bbc0dcd..cc390d40b33a1d8f 100644
+index 5dd182ae6e5..8a20caa8c4e 100644
 --- a/configure.ac
 +++ b/configure.ac
-@@ -2493,39 +2493,6 @@ if test "${HAVE_X11}" = "yes"; then
+@@ -2695,39 +2695,6 @@ if test "${HAVE_X11}" = "yes"; then
      export LD_RUN_PATH
    fi
  
@@ -49,3 +57,6 @@ index 660784347bbc0dcd..cc390d40b33a1d8f 100644
    # Reportedly, some broken Solaris systems have XKBlib.h but are missing
    # header files included from there.
    AC_CACHE_CHECK([for Xkb], [emacs_cv_xkb],
+-- 
+2.41.0
+

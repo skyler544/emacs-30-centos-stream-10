@@ -24,7 +24,7 @@ Patch2:        emacs-system-crypto-policies.patch
 # causes a dependency on pkgconfig(systemd)
 # => remove it if we stop using this patch
 Patch3:        emacs-libdir-vs-systemd.patch
-Patch5:        emacs-configure-c99-1.patch
+Patch5:        0001-configure-Remove-obsolete-check-for-b-i486-linuxaout.patch
 
 BuildRequires: gcc
 BuildRequires: atk-devel
