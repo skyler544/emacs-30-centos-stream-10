@@ -24,18 +24,7 @@ Patch2:        emacs-system-crypto-policies.patch
 # causes a dependency on pkgconfig(systemd)
 # => remove it if we stop using this patch
 Patch3:        emacs-libdir-vs-systemd.patch
-Patch4:        emacs-pdmp-fingerprint.patch
 Patch5:        emacs-configure-c99-1.patch
-Patch6:        emacs-configure-c99-2.patch
-# CVE-2022-45939
-Patch7:        https://git.savannah.gnu.org/cgit/emacs.git/patch/?id=d48bb4874bc6cd3e69c7a15fc3c91cc141025c51#./fixed-ctags-local-command-execute-vulnerability.patch
-# https://debbugs.gnu.org/cgi/bugreport.cgi?bug=60208
-# backport of https://git.savannah.gnu.org/cgit/emacs.git/patch/?id=e59216d3be86918b995bd63273c851ebc6176a83
-Patch8:        native-compile-with_-Q.patch
-Patch9:        webkit2gtk-4.1.patch
-# Fix infinite loop error https://debbugs.gnu.org/cgi/bugreport.cgi?bug=58780
-# Can be removed on next release of Emacs rhbz#2187041
-Patch10:       fix-searching-for-end-of-string-in-python-nav-end-of.patch
 
 BuildRequires: gcc
 BuildRequires: atk-devel
