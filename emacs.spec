@@ -12,7 +12,6 @@ Source0:       https://ftp.gnu.org/gnu/emacs/emacs-%{version}.tar.xz
 Source1:       https://ftp.gnu.org/gnu/emacs/emacs-%{version}.tar.xz.sig
 # Stefan Kangas' key
 Source2:       https://keys.openpgp.org/vks/v1/by-fingerprint/CEA1DE21AB108493CC9C65742E82323B8F4353EE
-Source3:       https://git.savannah.gnu.org/gitweb/?p=gnulib.git;a=blob_plain;f=lib/cdefs.h;hb=refs/heads/master#./cdefs.h
 Source4:       dotemacs.el
 Source5:       site-start.el
 Source6:       default.el
@@ -212,9 +211,6 @@ Development header files for Emacs.
 %prep
 %{gpgverify} --keyring='%{SOURCE2}' --signature='%{SOURCE1}' --data='%{SOURCE0}'
 %setup -q
-
-# workaround for ftbfs on ppc64, see https://bugzilla.redhat.com/show_bug.cgi?id=2045780#c8
-cp -p %{SOURCE3} lib/
 
 %patch1 -p1 -b .spellchecker
 %patch2 -p1 -b .system-crypto-policies
