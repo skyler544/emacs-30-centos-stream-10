@@ -199,18 +199,8 @@ Development header files for Emacs.
 
 %prep
 %{gpgverify} --keyring='%{SOURCE2}' --signature='%{SOURCE1}' --data='%{SOURCE0}'
-%setup -q
+%autosetup -p1
 
-%patch1 -p1 -b .spellchecker
-%patch2 -p1 -b .system-crypto-policies
-%patch3 -p1 -b .libdir-vs-systemd
-%patch4 -p1 -b .pdmp-fingerprint
-%patch5 -p1
-%patch6 -p1
-%patch7 -p1 -b .ctags-local-execution-cve
-%patch8 -p1 -b .native-compile-Q
-%patch9 -p1 -b .webkit2gtk-4.1
-%patch10 -p1
 autoconf
 
 grep -v "tetris.elc" lisp/Makefile.in > lisp/Makefile.in.new \
