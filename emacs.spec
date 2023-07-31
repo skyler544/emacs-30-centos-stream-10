@@ -4,8 +4,8 @@
 Summary:       GNU Emacs text editor
 Name:          emacs
 Epoch:         1
-Version:       28.2
-Release:       10%{?dist}
+Version:       29.1
+Release:       1%{?dist}
 License:       GPL-3.0-or-later AND CC0-1.0
 URL:           http://www.gnu.org/software/emacs/
 Source0:       https://ftp.gnu.org/gnu/emacs/emacs-%{version}.tar.xz
@@ -371,7 +371,7 @@ rm -f *-filelist {common,el}-*-files
 )
 
 # Sorted list of info files
-%define info_files auth autotype bovine calc ccmode cl dbus dired-x ebrowse ede ediff edt efaq eieio eintr elisp emacs-gnutls emacs-mime emacs epa erc ert eshell eudc eww flymake forms gnus htmlfontify idlwave ido mairix-el message mh-e modus-themes newsticker nxml-mode octave-mode org pcl-cvs pgg rcirc reftex remember sasl sc semantic ses sieve smtpmail speedbar srecode todo-mode tramp transient url vhdl-mode vip viper widget wisent woman
+%define info_files auth autotype bovine calc ccmode cl dbus dired-x ebrowse ede ediff edt efaq eglot eieio eintr elisp emacs-gnutls emacs-mime emacs epa erc ert eshell eudc eww flymake forms gnus htmlfontify idlwave ido mairix-el message mh-e modus-themes newsticker nxml-mode octave-mode org pcl-cvs pgg rcirc reftex remember sasl sc semantic ses sieve smtpmail speedbar srecode todo-mode tramp transient url use-package vhdl-mode vip viper vtable widget wisent woman
 
 for info_f in %info_files; do
     echo "%{_infodir}/${info_f}.info*" >> info-filelist
@@ -525,6 +525,9 @@ desktop-file-validate %{buildroot}/%{_datadir}/applications/*.desktop
 %{_includedir}/emacs-module.h
 
 %changelog
+* Mon Jul 31 2023 Dan Čermák <dan.cermak@cgc-instruments.com> - 1:29.1-1
+- New upstream release 29.1, fixes rhbz#2227492
+
 * Tue Jul 25 2023 Scott Talbert <swt@techie.net> - 1:28.2-10
 - Rebuild for libotf soname bump
 
