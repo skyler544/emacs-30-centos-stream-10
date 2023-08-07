@@ -169,8 +169,8 @@ Obsoletes:     emacs-transient < 0.3.0-4
 # meantime, we need the following packages for
 # treesit-install-language-grammar to be able to build the parsers for
 # us at runtime:
-Suggests:      ((gcc and gcc-c++) or clang)
-Suggests:      git
+Recommends:    ((gcc and gcc-c++) or clang)
+Recommends:    git
 
 
 %description common
