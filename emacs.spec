@@ -41,6 +41,7 @@ BuildRequires: libtiff-devel
 BuildRequires: libX11-devel
 BuildRequires: libXau-devel
 BuildRequires: libXdmcp-devel
+BuildRequires: libXi-devel
 BuildRequires: libXrender-devel
 BuildRequires: libXt-devel
 BuildRequires: libXpm-devel
