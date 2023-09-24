@@ -379,9 +379,8 @@ rm -f *-filelist {common,el}-*-files
 ( TOPDIR=${PWD}
   cd %{buildroot}
 
-  find .%{_datadir}/emacs/%{version}/lisp \
-    .%{_datadir}/emacs/%{version}/lisp/leim \
-    .%{_datadir}/emacs/site-lisp \( -type f -name '*.elc' -fprint $TOPDIR/common-lisp-none-elc-files \) -o \( -type d -fprintf $TOPDIR/common-lisp-dir-files "%%%%dir %%p\n" \) -o \( -name '*.el.gz' -fprint $TOPDIR/el-bytecomped-files -o -fprint $TOPDIR/common-not-comped-files \)
+  find .%{_datadir}/emacs/%{version}/lisp .%{site_lisp} \
+    \( -type f -name '*.elc' -fprint $TOPDIR/common-lisp-none-elc-files \) -o \( -type d -fprintf $TOPDIR/common-lisp-dir-files "%%%%dir %%p\n" \) -o \( -name '*.el.gz' -fprint $TOPDIR/el-bytecomped-files -o -fprint $TOPDIR/common-not-comped-files \)
 
 )
 
@@ -396,8 +395,7 @@ echo "%{_infodir}/info*" >> info-filelist
 
 # Put the lists together after filtering  ./usr to /usr
 sed -i -e "s|\.%{_prefix}|%{_prefix}|" *-files
-cat common-*-files > common-filelist
-cat el-*-files common-lisp-dir-files > el-filelist
+grep -vhE '%{site_lisp}(|/(default\.el|site-start\.d|site-start\.el))$' {common,el}-*-files > common-filelist
 
 # Remove old icon
 rm %{buildroot}%{_datadir}/icons/hicolor/scalable/mimetypes/emacs-document23.svg
@@ -501,7 +499,7 @@ desktop-file-validate %{buildroot}/%{_datadir}/applications/*.desktop
 %attr(0755,-,-) %ghost %{_bindir}/emacs
 %attr(0755,-,-) %ghost %{_bindir}/emacs-nox
 
-%files common -f common-filelist -f el-filelist -f info-filelist
+%files common -f common-filelist -f info-filelist
 %config(noreplace) %{_sysconfdir}/skel/.emacs
 %{_rpmconfigdir}/macros.d/macros.emacs
 %license etc/COPYING
@@ -523,8 +521,8 @@ desktop-file-validate %{buildroot}/%{_datadir}/applications/*.desktop
 %{emacs_libexecdir}/hexl
 %{emacs_libexecdir}/rcs2log
 %{_userunitdir}/emacs.service
-%attr(0644,root,root) %config(noreplace) %{_datadir}/emacs/site-lisp/default.el
-%attr(0644,root,root) %config %{_datadir}/emacs/site-lisp/site-start.el
+%attr(0644,root,root) %config(noreplace) %{site_lisp}/default.el
+%attr(0644,root,root) %config %{site_lisp}/site-start.el
 %{pkgconfig}/emacs.pc
 
 %files terminal
@@ -540,6 +538,9 @@ desktop-file-validate %{buildroot}/%{_datadir}/applications/*.desktop
 %{_includedir}/emacs-module.h
 
 %changelog
+* Fri Apr 14 2023 Peter Oliver <rpm@mavit.org.uk> - 1:28.2-5
+- Eliminate "file listed twice" warings during RPM build.
+
 * Sun Aug  6 2023 Peter Oliver <rpm@mavit.org.uk> - 1:29.1-2
 - Enable new features in Emacs 29: SQLite, Tree-sitter, WEBP, XInput 2.
 
