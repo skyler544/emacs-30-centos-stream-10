@@ -1,11 +1,13 @@
 %global _hardened_build 1
 
+%bcond webkit %[!(0%{?rhel} >= 10)]
+
 # This file is encoded in UTF-8.  -*- coding: utf-8 -*-
 Summary:       GNU Emacs text editor
 Name:          emacs
 Epoch:         1
 Version:       29.1
-Release:       2%{?dist}
+Release:       3%{?dist}
 License:       GPL-3.0-or-later AND CC0-1.0
 URL:           http://www.gnu.org/software/emacs/
 Source0:       https://ftp.gnu.org/gnu/emacs/emacs-%{version}.tar.xz
@@ -74,7 +76,9 @@ BuildRequires: libsqlite3x-devel
 BuildRequires: libwebp-devel
 
 BuildRequires: gtk3-devel
+%if %{with webkit}
 BuildRequires: webkit2gtk4.1-devel
+%endif
 
 BuildRequires: gnupg2
 
@@ -271,9 +275,9 @@ LDFLAGS=-Wl,-z,relro;  export LDFLAGS;
 
 %configure --with-dbus --with-gif --with-jpeg --with-png --with-rsvg \
            --with-tiff --with-xpm --with-x-toolkit=gtk3 --with-gpm=no \
-           --with-xwidgets --with-modules --with-harfbuzz --with-cairo --with-json \
+           --with-modules --with-harfbuzz --with-cairo --with-json \
            --with-native-compilation=aot --with-tree-sitter --with-sqlite3 \
-           --with-webp --with-xinput2
+           --with-webp --with-xinput2 %{?with_webkit:--with-xwidgets}
 %{setarch} %make_build bootstrap
 %{setarch} %make_build
 cd ..
@@ -538,6 +542,9 @@ desktop-file-validate %{buildroot}/%{_datadir}/applications/*.desktop
 %{_includedir}/emacs-module.h
 
 %changelog
+* Fri Oct 20 2023 Yaakov Selkowitz <yselkowi@redhat.com> - 1:29.1-3
+- Disable xwidgets on RHEL 10
+
 * Fri Apr 14 2023 Peter Oliver <rpm@mavit.org.uk> - 1:28.2-5
 - Eliminate "file listed twice" warings during RPM build.
 
