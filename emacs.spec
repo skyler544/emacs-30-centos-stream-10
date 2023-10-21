@@ -344,7 +344,7 @@ LDFLAGS=-Wl,-z,relro;  export LDFLAGS;
            --with-sqlite3 \
            --with-tiff \
            --with-tree-sitter \
-           --with-webp
+           --with-webp \
            --with-xpm \
            %{?with_webkit:--with-xwidgets}
 %{setarch} %make_build bootstrap
