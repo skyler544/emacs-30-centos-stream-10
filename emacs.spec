@@ -276,7 +276,7 @@ LDFLAGS=-Wl,-z,relro;  export LDFLAGS;
            --with-x-toolkit=lucid \
            --with-xft \
            --with-xinput2 \
-           --with-xpm \
+           --with-xpm
 %{setarch} %make_build bootstrap
 %{setarch} %make_build
 cd ..
