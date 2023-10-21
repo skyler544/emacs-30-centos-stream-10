@@ -1,4 +1,5 @@
 %global _hardened_build 1
+%bcond webkit %[!(0%{?rhel} >= 10)]
 
 # This file is encoded in UTF-8.  -*- coding: utf-8 -*-
 Summary:       GNU Emacs text editor
@@ -78,7 +79,9 @@ BuildRequires: libsqlite3x-devel
 BuildRequires: libwebp-devel
 
 BuildRequires: gtk3-devel
+%if %{with webkit}
 BuildRequires: webkit2gtk4.1-devel
+%endif
 
 BuildRequires: gnupg2
 
@@ -255,11 +258,25 @@ ln -s ../configure .
 
 LDFLAGS=-Wl,-z,relro;  export LDFLAGS;
 
-%configure --with-dbus --with-gif --with-jpeg --with-png --with-rsvg \
-           --with-tiff --with-xft --with-xpm --with-x-toolkit=lucid --with-gpm=no \
-           --with-modules --with-harfbuzz --with-cairo --with-json \
-           --with-native-compilation=aot --with-tree-sitter --with-sqlite3 \
-           --with-webp --with-xinput2
+%configure --with-cairo \
+           --with-dbus \
+           --with-gif \
+           --with-gpm=no \
+           --with-harfbuzz \
+           --with-jpeg \
+           --with-json \
+           --with-modules \
+           --with-native-compilation=aot \
+           --with-png \
+           --with-rsvg \
+           --with-sqlite3 \
+           --with-tiff \
+           --with-tree-sitter \
+           --with-webp \
+           --with-x-toolkit=lucid \
+           --with-xft \
+           --with-xinput2 \
+           --with-xpm \
 %{setarch} %make_build bootstrap
 %{setarch} %make_build
 cd ..
@@ -267,8 +284,12 @@ cd ..
 # Build binary without X support
 mkdir build-nw && cd build-nw
 ln -s ../configure .
-%configure --with-x=no --with-modules --with-json \
-           --with-native-compilation=aot --with-tree-sitter --with-sqlite3
+%configure --with-json \
+           --with-modules \
+           --with-native-compilation=aot \
+           --with-sqlite3 \
+           --with-tree-sitter \
+           --with-x=no
 %{setarch} %make_build bootstrap
 %{setarch} %make_build
 cd ..
@@ -279,11 +300,25 @@ ln -s ../configure .
 
 LDFLAGS=-Wl,-z,relro;  export LDFLAGS;
 
-%configure --with-dbus --with-gif --with-jpeg --with-png --with-rsvg \
-           --with-tiff --with-xpm --with-x-toolkit=gtk3 --with-gpm=no \
-           --with-xwidgets --with-modules --with-harfbuzz --with-cairo --with-json \
-           --with-native-compilation=aot --with-tree-sitter --with-sqlite3 \
-           --with-webp --with-xinput2
+%configure --with-cairo \
+           --with-dbus \
+           --with-gif \
+           --with-gpm=no \
+           --with-harfbuzz \
+           --with-jpeg \
+           --with-json \
+           --with-modules \
+           --with-native-compilation=aot \
+           --with-png \
+           --with-rsvg \
+           --with-sqlite3 \
+           --with-tiff \
+           --with-tree-sitter \
+           --with-webp \
+           --with-x-toolkit=gtk3 \
+           --with-xinput2 \
+           --with-xpm \
+           %{?with_webkit:--with-xwidgets}
 %{setarch} %make_build bootstrap
 %{setarch} %make_build
 cd ..
@@ -294,11 +329,24 @@ ln -s ../configure .
 
 LDFLAGS=-Wl,-z,relro;  export LDFLAGS;
 
-%configure --with-dbus --with-gif --with-jpeg --with-png --with-rsvg \
-           --with-tiff --with-xpm --with-pgtk --with-gpm=no \
-           --with-xwidgets --with-modules --with-harfbuzz --with-cairo --with-json \
-           --with-native-compilation=aot --with-tree-sitter --with-sqlite3 \
+%configure --with-cairo \
+           --with-dbus \
+           --with-gif \
+           --with-gpm=no \
+           --with-harfbuzz \
+           --with-jpeg \
+           --with-json \
+           --with-modules \
+           --with-native-compilation=aot \
+           --with-pgtk \
+           --with-png \
+           --with-rsvg \
+           --with-sqlite3 \
+           --with-tiff \
+           --with-tree-sitter \
            --with-webp
+           --with-xpm \
+           %{?with_webkit:--with-xwidgets}
 %{setarch} %make_build bootstrap
 %{setarch} %make_build
 cd ..
