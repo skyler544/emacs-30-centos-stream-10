@@ -158,7 +158,7 @@ Requires(posttrans): /usr/sbin/alternatives
 Requires:      emacs-common = %{epoch}:%{version}-%{release}
 Provides:      emacs(bin) = %{epoch}:%{version}-%{release}
 Provides:      emacs-nox = %{epoch}:%{version}-%{release}
-Obsoletes:     emacs-nox < 1:29.1-5
+Obsoletes:     emacs-nox < 1:30
 
 %description nw
 %desc
