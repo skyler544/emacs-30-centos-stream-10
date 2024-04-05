@@ -172,7 +172,7 @@ Summary:       Emacs common files
 License:       GPL-3.0-or-later AND GFDL-1.3-no-invariants-or-later AND BSD-3-Clause
 Requires(preun): /usr/sbin/alternatives
 Requires(posttrans): /usr/sbin/alternatives
-Requires:      %{name}-filesystem = %{epoch}:%{version}-%{release}
+Requires:      %{name}-filesystem
 Requires:      libgccjit
 Recommends:    (emacs or emacs-gtk+x11 or emacs-lucid or emacs-nw)
 Recommends:    enchant2
