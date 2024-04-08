@@ -10,7 +10,7 @@ Epoch:         1
 Version:       29.3
 Release:       %autorelease
 License:       GPL-3.0-or-later AND CC0-1.0
-URL:           http://www.gnu.org/software/emacs/
+URL:           https://www.gnu.org/software/emacs/
 Source0:       https://ftp.gnu.org/gnu/emacs/emacs-%{version}.tar.xz
 Source1:       https://ftp.gnu.org/gnu/emacs/emacs-%{version}.tar.xz.sig
 # Emacs 29+ sign key
