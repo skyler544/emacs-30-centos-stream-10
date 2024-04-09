@@ -212,14 +212,6 @@ emacs-terminal if you need a terminal with Malayalam support.
 Please note that emacs-terminal is a temporary package and it will be
 removed when another terminal becomes capable of handling Malayalam.
 
-%package filesystem
-Summary:       Emacs filesystem layout
-BuildArch:     noarch
-
-%description filesystem
-This package provides some directories which are required by other
-packages that add functionality to Emacs.
-
 %package devel
 Summary: Development header files for Emacs
 
@@ -643,11 +635,6 @@ desktop-file-validate %{buildroot}/%{_datadir}/applications/*.desktop
 %files terminal
 %{_bindir}/emacs-terminal
 %{_datadir}/applications/emacs-terminal.desktop
-
-%files filesystem
-%dir %{_datadir}/emacs
-%dir %{_datadir}/emacs/site-lisp
-%dir %{_datadir}/emacs/site-lisp/site-start.d
 
 %files devel
 %{_includedir}/emacs-module.h
