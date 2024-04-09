@@ -6,7 +6,7 @@
 if [ "$XDG_SESSION_TYPE" = 'x11' ]; then
     emacs="$(readlink -f /usr/bin/emacs)"
     emacs="${emacs##*/}"
-    emacs="${emacs%-*.*.*}"
+    emacs="${emacs%-*.*}"
     if [ "$emacs" = 'emacs' ]; then
         if type emacs-gtk+x11 >/dev/null; then
             exec emacs-gtk+x11 "$@"
