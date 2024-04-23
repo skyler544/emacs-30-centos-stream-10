@@ -63,7 +63,6 @@ BuildRequires: alsa-lib-devel
 %if %{with gpm}
 BuildRequires: gpm-devel
 %endif
-BuildRequires: liblockfile-devel
 BuildRequires: libxml2-devel
 BuildRequires: autoconf
 BuildRequires: bzip2
