@@ -184,6 +184,10 @@ Provides:      emacs-transient = 0.3.7
 # version as of the release of emacs 28.1 is obsoleted
 Obsoletes:     emacs-transient < 0.3.0-4
 
+# https://github.com/tree-sitter/tree-sitter/issues/3296
+Requires:      libtree-sitter >= 0.22.5
+Requires:      libtree-sitter < 0.23
+
 # Ideally, we'd package all tree-sitter parsers as RPMs, but, in the
 # meantime, we need the following packages for
 # treesit-install-language-grammar to be able to build the parsers for
