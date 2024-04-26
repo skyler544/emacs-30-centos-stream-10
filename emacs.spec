@@ -118,10 +118,12 @@ language (elisp), and the capability to read mail, news, and more
 without leaving the editor.
 }
 
+
 %description
 %desc
 This package provides an emacs binary with support for Wayland, using the
 GTK toolkit.
+
 
 %package gtk+x11
 Summary:       GNU Emacs text editor with GTK toolkit X support
@@ -137,6 +139,7 @@ Supplements:   (xorg-x11-server-Xorg and emacs-common)
 This package provides an emacs-gtk+x11 binary with support for the X
 Window System, using the GTK toolkit.
 
+
 %package lucid
 Summary:       GNU Emacs text editor with Lucid toolkit X support
 Requires:      google-noto-sans-mono-vf-fonts
@@ -149,6 +152,7 @@ Provides:      emacs(bin) = %{epoch}:%{version}-%{release}
 %desc
 This package provides an emacs-lucid binary with support for the X
 Window System, using the Lucid toolkit.
+
 
 %package nw
 Summary:       GNU Emacs text editor without X support
@@ -164,6 +168,17 @@ Obsoletes:     emacs-nox < 1:30
 This package provides an emacs-nw binary with no graphical display
 support, for running on a terminal.
 
+
+%package -n emacsclient
+Summary:       Remotely control GNU Emacs
+Conflicts:     emacs-common < 1:29.3-9
+
+%description -n emacsclient
+%desc
+This package provides emacsclient, which can be used to control an Emacs
+server.
+
+
 %package common
 Summary:       Emacs common files
 # The entire source code is GPLv3+ except lib-src/etags.c which is
@@ -172,6 +187,7 @@ License:       GPL-3.0-or-later AND GFDL-1.3-no-invariants-or-later AND BSD-3-Cl
 Requires(preun): /usr/sbin/alternatives
 Requires(posttrans): /usr/sbin/alternatives
 Requires:      %{name}-filesystem
+Requires:      emacsclient
 Requires:      libgccjit
 Recommends:    (emacs or emacs-gtk+x11 or emacs-lucid or emacs-nw)
 Recommends:    enchant2
@@ -197,11 +213,12 @@ Recommends:    git
 
 Recommends:    libtree-sitter-java
 
-
 %description common
 %desc
 This package contains all the common files needed by emacs, emacs-gtk+x11,
 emacs-lucid, or emacs-nw.
+
+
 
 %package terminal
 Summary:       A desktop menu item for GNU Emacs terminal.
@@ -215,11 +232,13 @@ emacs-terminal if you need a terminal with Malayalam support.
 Please note that emacs-terminal is a temporary package and it will be
 removed when another terminal becomes capable of handling Malayalam.
 
+
 %package devel
 Summary: Development header files for Emacs
 
 %description devel
 Development header files for Emacs.
+
 
 %prep
 %{gpgverify} --keyring='%{SOURCE2}' --signature='%{SOURCE1}' --data='%{SOURCE0}'
@@ -601,13 +620,17 @@ desktop-file-validate %{buildroot}/%{_datadir}/applications/*.desktop
 %attr(0755,-,-) %ghost %{_bindir}/emacs
 %attr(0755,-,-) %ghost %{_bindir}/emacs-nw
 
+%files -n emacsclient
+%license etc/COPYING
+%{_bindir}/emacsclient
+%{_mandir}/man1/emacsclient.1*
+
 %files common -f common-filelist -f info-filelist
 %config(noreplace) %{_sysconfdir}/skel/.emacs
 %{_rpmconfigdir}/macros.d/macros.emacs
 %license etc/COPYING
 %doc doc/NEWS BUGS README
 %{_bindir}/ebrowse
-%{_bindir}/emacsclient
 %{_bindir}/emacs-desktop
 %{_bindir}/etags.emacs
 %{_bindir}/gctags
@@ -620,7 +643,6 @@ desktop-file-validate %{buildroot}/%{_datadir}/applications/*.desktop
 %{_datadir}/icons/hicolor/scalable/mimetypes/emacs-document.svg
 %{_mandir}/man1/ebrowse.1*
 %{_mandir}/man1/emacs.1*
-%{_mandir}/man1/emacsclient.1*
 %{_mandir}/man1/etags.emacs.1*
 %{_mandir}/man1/gctags.1*
 %dir %{_datadir}/emacs/%{version}
