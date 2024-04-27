@@ -112,10 +112,10 @@ Supplements:   (libwayland-server and emacs-common)
 %define emacs_libexecdir %{_libexecdir}/emacs/%{version}/%{_host}
 %define native_lisp %{_libdir}/emacs/%{version}/native-lisp
 
-%global desc %{expand:Emacs is a powerful, customizable, self-documenting, modeless text
-editor. Emacs contains special code editing features, a scripting
-language (elisp), and the capability to read mail, news, and more
-without leaving the editor.
+%global desc %{expand:GNU Emacs is a powerful, customizable, self-documenting, modeless text
+editor. It contains special code editing features, a scripting language
+(elisp), and the capability to read mail, news, and more without leaving
+the editor.
 }
 
 
@@ -155,7 +155,7 @@ Window System, using the Lucid toolkit.
 
 
 %package nw
-Summary:       GNU Emacs text editor without X support
+Summary:       GNU Emacs text editor with no window system support
 Requires(preun): /usr/sbin/alternatives
 Requires(posttrans): /usr/sbin/alternatives
 Requires:      emacs-common = %{epoch}:%{version}-%{release}
@@ -165,8 +165,8 @@ Obsoletes:     emacs-nox < 1:30
 
 %description nw
 %desc
-This package provides an emacs-nw binary with no graphical display
-support, for running on a terminal.
+This package provides an emacs-nw binary without graphical display
+support, for running on a terminal only.
 
 
 %package -n emacsclient
