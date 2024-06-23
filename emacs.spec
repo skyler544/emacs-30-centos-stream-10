@@ -13,8 +13,8 @@ License:       GPL-3.0-or-later AND CC0-1.0
 URL:           https://www.gnu.org/software/emacs/
 Source0:       https://ftp.gnu.org/gnu/emacs/emacs-%{version}.tar.xz
 Source1:       https://ftp.gnu.org/gnu/emacs/emacs-%{version}.tar.xz.sig
-# Emacs 29+ sign key
 Source2:       https://keys.openpgp.org/vks/v1/by-fingerprint/17E90D521672C04631B1183EE78DAE0F3115E06B
+Source3:       https://keys.openpgp.org/vks/v1/by-fingerprint/CEA1DE21AB108493CC9C65742E82323B8F4353EE
 Source4:       dotemacs.el
 Source5:       site-start.el
 Source6:       default.el
@@ -241,7 +241,9 @@ Development header files for Emacs.
 
 
 %prep
-%{gpgverify} --keyring='%{SOURCE2}' --signature='%{SOURCE1}' --data='%{SOURCE0}'
+cat '%{SOURCE2}' '%{SOURCE3}' > keyring
+%{gpgverify} --keyring=keyring --signature='%{SOURCE1}' --data='%{SOURCE0}'
+rm keyring
 %autosetup -p1
 
 autoconf
