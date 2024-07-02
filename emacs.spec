@@ -188,6 +188,7 @@ Summary:       Emacs common files
 License:       GPL-3.0-or-later AND GFDL-1.3-no-invariants-or-later AND BSD-3-Clause
 Requires(preun): /usr/sbin/alternatives
 Requires(posttrans): /usr/sbin/alternatives
+Requires:      /usr/bin/readlink
 Requires:      %{name}-filesystem
 Requires:      emacsclient
 Requires:      libgccjit
