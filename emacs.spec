@@ -413,16 +413,23 @@ touch %{buildroot}%{_bindir}/emacs
 gunzip %{buildroot}%{_datadir}/emacs/%{version}/lisp/jka-compr.el.gz
 gunzip %{buildroot}%{_datadir}/emacs/%{version}/lisp/jka-cmpr-hook.el.gz
 
-# Install the emacs with GTK toolkit
+# Install the emacs binary with pure GTK toolkit
+mv %{buildroot}%{_bindir}/emacs-%{version} %{buildroot}%{_bindir}/emacs-%{version}-pgtk
+ln -s emacs-%{version}-pgtk %{buildroot}%{_bindir}/emacs-pgtk
+
+# Install the emacs binary using mixed GTK and X11
 install -p -m 0755 build-gtk+x11/src/emacs %{buildroot}%{_bindir}/emacs-%{version}-gtk+x11
+ln -s emacs-%{version}-gtk+x11 %{buildroot}%{_bindir}/emacs-gtk+x11
 
 # Install the emacs with Lucid toolkit
 install -p -m 0755 build-lucid/src/emacs %{buildroot}%{_bindir}/emacs-%{version}-lucid
+ln -s emacs-%{version}-lucid %{buildroot}%{_bindir}/emacs-lucid
 
 # Install the emacs without graphical display
 install -p -m 0755 build-nw/src/emacs %{buildroot}%{_bindir}/emacs-%{version}-nw
 ln -s emacs-%{version}-nw %{buildroot}%{_bindir}/emacs-%{version}-nox
-ln -s emacs-nw %{buildroot}%{_bindir}/emacs-nox
+ln -s emacs-%{version}-nw %{buildroot}%{_bindir}/emacs-nox
+ln -s emacs-%{version}-nw %{buildroot}%{_bindir}/emacs-nw
 
 # Make sure movemail isn't setgid
 chmod 755 %{buildroot}%{emacs_libexecdir}/movemail
@@ -567,63 +574,67 @@ appstream-util validate-relax --nonet %{buildroot}/%{_metainfodir}/*.metainfo.xm
 desktop-file-validate %{buildroot}/%{_datadir}/applications/*.desktop
 
 %preun
-/usr/sbin/alternatives --remove emacs %{_bindir}/emacs-%{version} || :
+if [ $1 = 0 ]; then
+  /usr/sbin/alternatives --remove emacs %{_bindir}/emacs-pgtk || :
+fi
 
 %posttrans
-/usr/sbin/alternatives --install %{_bindir}/emacs emacs %{_bindir}/emacs-%{version} 80 || :
+/usr/sbin/alternatives --install %{_bindir}/emacs emacs %{_bindir}/emacs-pgtk 80 || :
 
 %preun lucid
-/usr/sbin/alternatives --remove emacs %{_bindir}/emacs-%{version}-lucid || :
-/usr/sbin/alternatives --remove emacs-lucid %{_bindir}/emacs-%{version}-lucid || :
+if [ $1 = 0 ]; then
+  /usr/sbin/alternatives --remove emacs %{_bindir}/emacs-lucid || :
+fi
 
 %posttrans lucid
-/usr/sbin/alternatives --install %{_bindir}/emacs emacs %{_bindir}/emacs-%{version}-lucid 70 || :
-/usr/sbin/alternatives --install %{_bindir}/emacs-lucid emacs-lucid %{_bindir}/emacs-%{version}-lucid 60 || :
+/usr/sbin/alternatives --install %{_bindir}/emacs emacs %{_bindir}/emacs-lucid 70 || :
 
 %preun gtk+x11
-/usr/sbin/alternatives --remove emacs %{_bindir}/emacs-%{version}-gtk+x11 || :
-/usr/sbin/alternatives --remove emacs-gtk+x11 %{_bindir}/emacs-%{version}-gtk+x11 || :
+if [ $1 = 0 ]; then
+  /usr/sbin/alternatives --remove emacs %{_bindir}/emacs-gtk+x11 || :
+fi
 
 %posttrans gtk+x11
-/usr/sbin/alternatives --install %{_bindir}/emacs emacs %{_bindir}/emacs-%{version}-gtk+x11 75 || :
-/usr/sbin/alternatives --install %{_bindir}/emacs-gtk+x11 emacs-gtk+x11 %{_bindir}/emacs-%{version}-gtk+x11 60 || :
+/usr/sbin/alternatives --install %{_bindir}/emacs emacs %{_bindir}/emacs-gtk+x11 75 || :
 
 %preun nw
-/usr/sbin/alternatives --remove emacs %{_bindir}/emacs-%{version}-nw || :
-/usr/sbin/alternatives --remove emacs-nw %{_bindir}/emacs-%{version}-nw || :
+if [ $1 = 0 ]; then
+  /usr/sbin/alternatives --remove emacs %{_bindir}/emacs-nw || :
+fi
 
 %posttrans nw
-/usr/sbin/alternatives --install %{_bindir}/emacs emacs %{_bindir}/emacs-%{version}-nw 70 || :
-/usr/sbin/alternatives --install %{_bindir}/emacs-nw emacs-nw %{_bindir}/emacs-%{version}-nw 60 || :
+/usr/sbin/alternatives --install %{_bindir}/emacs emacs %{_bindir}/emacs-nw 70 || :
 
 %preun common
-/usr/sbin/alternatives --remove emacs.etags %{_bindir}/etags.emacs || :
+if [ $1 = 0 ]; then
+  /usr/sbin/alternatives --remove emacs.etags %{_bindir}/etags.emacs || :
+fi
 
 %posttrans common
 /usr/sbin/alternatives --install %{_bindir}/etags emacs.etags %{_bindir}/etags.emacs 80 \
        --slave %{_mandir}/man1/etags.1.gz emacs.etags.man %{_mandir}/man1/etags.emacs.1.gz || :
 
 %files -f pgtk-eln-filelist -f pgtk-dirs
-%{_bindir}/emacs-%{version}
+%{_bindir}/emacs-%{version}-pgtk
 %attr(0755,-,-) %ghost %{_bindir}/emacs
 %{_datadir}/glib-2.0/schemas/org.gnu.emacs.defaults.gschema.xml
 
 %files gtk+x11 -f gtk+x11-eln-filelist -f gtk+x11-dirs
-%{_bindir}/emacs-%{version}-gtk+x11
 %attr(0755,-,-) %ghost %{_bindir}/emacs
-%attr(0755,-,-) %ghost %{_bindir}/emacs-gtk+x11
+%{_bindir}/emacs-%{version}-gtk+x11
+%{_bindir}/emacs-gtk+x11
 
 %files lucid -f lucid-eln-filelist -f lucid-dirs
-%{_bindir}/emacs-%{version}-lucid
 %attr(0755,-,-) %ghost %{_bindir}/emacs
-%attr(0755,-,-) %ghost %{_bindir}/emacs-lucid
+%{_bindir}/emacs-%{version}-lucid
+%{_bindir}/emacs-lucid
 
 %files nw -f nw-eln-filelist -f nw-dirs
+%attr(0755,-,-) %ghost %{_bindir}/emacs
 %{_bindir}/emacs-%{version}-nox
 %{_bindir}/emacs-%{version}-nw
 %{_bindir}/emacs-nox
-%attr(0755,-,-) %ghost %{_bindir}/emacs
-%attr(0755,-,-) %ghost %{_bindir}/emacs-nw
+%{_bindir}/emacs-nw
 
 %files -n emacsclient
 %license etc/COPYING

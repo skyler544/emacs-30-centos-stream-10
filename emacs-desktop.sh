@@ -4,16 +4,15 @@
 # using if there is an alternative.
 
 if [ "$XDG_SESSION_TYPE" = 'x11' ]; then
-    emacs="$(readlink -f /usr/bin/emacs)"
-    emacs="${emacs##*/}"
-    emacs="${emacs%-*.*}"
-    if [ "$emacs" = 'emacs' ]; then
+    case "$(readlink -f /usr/bin/emacs)" in
+    */emacs-*.*-pgtk)
         if type emacs-gtk+x11 >/dev/null; then
             exec emacs-gtk+x11 "$@"
         elif type emacs-lucid >/dev/null; then
             exec emacs-lucid "$@"
         fi
-    fi
+        ;;
+    esac
 fi
 
 exec emacs "$@"
