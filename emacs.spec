@@ -32,6 +32,10 @@ Patch3:        emacs-libdir-vs-systemd.patch
 Patch4:        emacs-desktop.patch
 Patch5:        emacs-pgtk-on-x-error-message.patch
 
+# Skip failing tests:
+Patch:         0001-Fix-flymake-tests-with-GCC-14.patch
+Patch:         0001-Tag-process-tests-multiple-threads-waiting-unstable-.patch
+
 BuildRequires: gcc
 BuildRequires: atk-devel
 BuildRequires: cairo-devel
@@ -251,14 +255,14 @@ rm keyring
 
 autoconf
 
+# Avoid trademark issues
 grep -v "tetris.elc" lisp/Makefile.in > lisp/Makefile.in.new \
    && mv lisp/Makefile.in.new lisp/Makefile.in
 grep -v "pong.elc" lisp/Makefile.in > lisp/Makefile.in.new \
    && mv lisp/Makefile.in.new lisp/Makefile.in
-
-# Avoid trademark issues
 rm -f lisp/play/tetris.el lisp/play/tetris.elc
 rm -f lisp/play/pong.el lisp/play/pong.elc
+sed -i "s/'tetris/'doctor/" test/src/doc-tests.el
 
 %ifarch %{ix86}
 %define setarch setarch %{_arch} -R
@@ -569,9 +573,27 @@ find %{buildroot}%{_libdir}/ -name '*eln' -type f | xargs chmod -x
 # see: https://bugzilla.redhat.com/show_bug.cgi?id=2157979#c11
 find %{buildroot}%{_libdir}/ -name '*eln' -type f | xargs touch
 
+
 %check
+cd build-pgtk
+%make_build check
+cd ..
+
+cd build-gtk+x11
+%make_build check
+cd ..
+
+cd build-lucid
+%make_build check
+cd ..
+
+cd build-nw
+%make_build check
+cd ..
+
 appstream-util validate-relax --nonet %{buildroot}/%{_metainfodir}/*.metainfo.xml
 desktop-file-validate %{buildroot}/%{_datadir}/applications/*.desktop
+
 
 %preun
 if [ $1 = 0 ]; then

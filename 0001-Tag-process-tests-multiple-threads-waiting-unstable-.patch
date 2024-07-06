@@ -1,0 +1,29 @@
+From d3a62e79847f00855eac69477fa3cd78014106c4 Mon Sep 17 00:00:00 2001
+From: Peter Oliver <git@mavit.org.uk>
+Date: Mon, 8 Jul 2024 14:26:26 +0100
+Subject: [PATCH] Tag process-tests/multiple-threads-waiting :unstable in RPM
+ %check
+
+* test/src/process-tests.el (process-tests/multiple-threads-waiting):
+Tag it as :unstable when building an RPM package.
+---
+ test/src/process-tests.el | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/test/src/process-tests.el b/test/src/process-tests.el
+index 15d46cbae15..ceeaa9f1554 100644
+--- a/test/src/process-tests.el
++++ b/test/src/process-tests.el
+@@ -895,7 +895,8 @@ process-tests/sentinel-with-multiple-processes
+                            (list (list process "finished\n"))))))))))
+ 
+ (ert-deftest process-tests/multiple-threads-waiting ()
+-  :tags (if (getenv "EMACS_EMBA_CI") '(:unstable))
++  :tags (if (or (getenv "EMACS_EMBA_CI") (getenv "RPM_BUILD_ROOT"))
++            '(:unstable))
+   (skip-unless (fboundp 'make-thread))
+   (with-timeout (60 (ert-fail "Test timed out"))
+     (process-tests--with-processes processes
+-- 
+2.45.2
+

@@ -1,0 +1,28 @@
+From a769f171e7ebb8e30f198f4328d46f47fe7958fb Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Ulrich=20M=C3=BCller?= <ulm@gentoo.org>
+Date: Mon, 24 Jun 2024 15:20:26 +0200
+Subject: [PATCH] ; Fix flymake tests with GCC 14.
+
+* test/lisp/progmodes/flymake-tests.el (included-c-header-files):
+Fix test failure with GCC 14.  (Bug#71749)
+---
+ test/lisp/progmodes/flymake-tests.el | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/test/lisp/progmodes/flymake-tests.el b/test/lisp/progmodes/flymake-tests.el
+index 21dbb0711d2..93bc9028031 100644
+--- a/test/lisp/progmodes/flymake-tests.el
++++ b/test/lisp/progmodes/flymake-tests.el
+@@ -174,7 +174,8 @@ included-c-header-files
+     (flymake-tests--with-flymake
+         ("some-problems.h")
+       (flymake-goto-next-error)
+-      (should (eq 'flymake-warning (face-at-point)))
++      ;; implicit-int was promoted from warning to error in GCC 14
++      (should (memq (face-at-point) '(flymake-warning flymake-error)))
+       (flymake-goto-next-error)
+       (should (eq 'flymake-error (face-at-point)))
+       (should-error (flymake-goto-next-error nil nil t)))
+-- 
+2.45.2
+
