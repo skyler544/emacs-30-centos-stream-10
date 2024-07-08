@@ -615,8 +615,9 @@ fi
        --slave %{_mandir}/man1/etags.1.gz emacs.etags.man %{_mandir}/man1/etags.emacs.1.gz || :
 
 %files -f pgtk-eln-filelist -f pgtk-dirs
-%{_bindir}/emacs-%{version}-pgtk
 %attr(0755,-,-) %ghost %{_bindir}/emacs
+%{_bindir}/emacs-%{version}-pgtk
+%{_bindir}/emacs-pgtk
 %{_datadir}/glib-2.0/schemas/org.gnu.emacs.defaults.gschema.xml
 
 %files gtk+x11 -f gtk+x11-eln-filelist -f gtk+x11-dirs
