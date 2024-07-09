@@ -747,7 +747,12 @@ fi
 %dir %{_datadir}/emacs/%{version}
 %{_datadir}/emacs/%{version}/etc
 %{_datadir}/emacs/%{version}/site-lisp
-%dir %{emacs_libexecdir}/
+%dir %{_libdir}/%{name}
+%dir %{_libdir}/%{name}/%{version}
+%dir %{native_lisp}
+%dir %{_libexecdir}/emacs
+%dir %{_libexecdir}/emacs/%{version}
+%dir %{emacs_libexecdir}
 %{emacs_libexecdir}/movemail
 %{emacs_libexecdir}/hexl
 %{emacs_libexecdir}/rcs2log
