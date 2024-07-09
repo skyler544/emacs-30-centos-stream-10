@@ -1,5 +1,6 @@
+/bodhi.template.last
+/emacs-*.src.rpm
 /emacs-23.3a.tar.bz2
-/php-mode.el
 /emacs-24.0.92.tar.gz
 /emacs-24.0.93.tar.gz
 /emacs-24.0.94.tar.gz
@@ -39,3 +40,5 @@
 /emacs-29.3.tar.xz.sig
 /emacs-29.4.tar.xz
 /emacs-29.4.tar.xz.sig
+/php-mode.el
+/results_emacs/
