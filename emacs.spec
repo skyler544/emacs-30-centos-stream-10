@@ -311,7 +311,8 @@ export CFLAGS="-DMAIL_USE_LOCKF %{build_cflags}"
 mkdir build-lucid && cd build-lucid
 ln -s ../configure .
 
-%configure --with-cairo \
+%configure --program-suffix=-lucid \
+           --with-cairo \
            --with-dbus \
            --with-gif \
            --with-gpm=no \
@@ -332,7 +333,6 @@ ln -s ../configure .
            --with-xpm
 %{setarch} %make_build bootstrap
 %{setarch} %make_build
-rm src/emacs-%{version}.*
 cd ..
 %endif
 
@@ -340,7 +340,8 @@ cd ..
 # Build binary without X support
 mkdir build-nw && cd build-nw
 ln -s ../configure .
-%configure --with-json \
+%configure --program-suffix=-nw \
+           --with-json \
            --with-modules \
            --with-native-compilation=aot \
            --with-sqlite3 \
@@ -351,7 +352,6 @@ ln -s ../configure .
            --with-x=no
 %{setarch} %make_build bootstrap
 %{setarch} %make_build
-rm src/emacs-%{version}.*
 cd ..
 %endif
 
@@ -360,7 +360,8 @@ cd ..
 mkdir build-gtk+x11 && cd build-gtk+x11
 ln -s ../configure .
 
-%configure --with-cairo \
+%configure --program-suffix=-gtk+x11 \
+           --with-cairo \
            --with-dbus \
            --with-gif \
            --with-gpm=no \
@@ -380,7 +381,6 @@ ln -s ../configure .
            --with-xpm
 %{setarch} %make_build bootstrap
 %{setarch} %make_build
-rm src/emacs-%{version}.*
 cd ..
 %endif
 
@@ -407,7 +407,6 @@ ln -s ../configure .
            --with-xpm
 %{setarch} %make_build bootstrap
 %{setarch} %make_build
-rm src/emacs-%{version}.*
 cd ..
 
 # Create pkgconfig file
@@ -432,40 +431,53 @@ EOF
 
 
 %install
+%if %{with nw}
+cd build-nw
+%{__make} install-arch-dep install-eln DESTDIR=%{?buildroot} INSTALL="%{__install} -p"
+cd ..
+%endif
+
+%if %{with lucid}
+cd build-lucid
+%{__make} install-arch-dep install-eln DESTDIR=%{?buildroot} INSTALL="%{__install} -p"
+cd ..
+%endif
+
+%if %{with gtkx11}
+cd build-gtk+x11
+%{__make} install-arch-dep install-eln DESTDIR=%{?buildroot} INSTALL="%{__install} -p"
+cd ..
+%endif
+
 cd build-pgtk
 %make_install
 cd ..
-
-# Let alternatives manage the symlink
-rm %{buildroot}%{_bindir}/emacs
-touch %{buildroot}%{_bindir}/emacs
 
 # Do not compress the files which implement compression itself (#484830)
 gunzip %{buildroot}%{_datadir}/emacs/%{version}/lisp/jka-compr.el.gz
 gunzip %{buildroot}%{_datadir}/emacs/%{version}/lisp/jka-cmpr-hook.el.gz
 
-# Install the emacs binary with pure GTK toolkit
+# Remove duplicate files with suffixed names
+%if %{with nw} || %{with lucid} || %{with gtkx11}
+find %{buildroot} \
+     -type f \
+     ! -name emacs-%{version}-gtk+x11 ! -name emacs-gtk+x11 \
+     ! -name emacs-%{version}-lucid   ! -name emacs-lucid \
+     ! -name emacs-%{version}-nw      ! -name emacs-nw \
+     -regextype posix-extended \
+     -regex '.*-(gtk\+x11|lucid|nw)((-mail)?\.[^/]+)?$' \
+     -print \
+     -delete
+%endif
+
+# Rename the emacs binary to indicate it's a "pure GTK" build
 mv %{buildroot}%{_bindir}/emacs-%{version} %{buildroot}%{_bindir}/emacs-%{version}-pgtk
 ln -s emacs-%{version}-pgtk %{buildroot}%{_bindir}/emacs-pgtk
 
-%if %{with gtkx11}
-# Install the emacs binary using mixed GTK and X11
-install -p -m 0755 build-gtk+x11/src/emacs %{buildroot}%{_bindir}/emacs-%{version}-gtk+x11
-ln -s emacs-%{version}-gtk+x11 %{buildroot}%{_bindir}/emacs-gtk+x11
-%endif
-
-%if %{with lucid}
-# Install the emacs with Lucid toolkit
-install -p -m 0755 build-lucid/src/emacs %{buildroot}%{_bindir}/emacs-%{version}-lucid
-ln -s emacs-%{version}-lucid %{buildroot}%{_bindir}/emacs-lucid
-%endif
-
+# Compatibility with earlier Fedora packages
 %if %{with nw}
-# Install the emacs without graphical display
-install -p -m 0755 build-nw/src/emacs %{buildroot}%{_bindir}/emacs-%{version}-nw
 ln -s emacs-%{version}-nw %{buildroot}%{_bindir}/emacs-%{version}-nox
 ln -s emacs-%{version}-nw %{buildroot}%{_bindir}/emacs-nox
-ln -s emacs-%{version}-nw %{buildroot}%{_bindir}/emacs-nw
 %endif
 
 # Make sure movemail isn't setgid
@@ -553,60 +565,51 @@ grep -vhE '%{site_lisp}(|/(default\.el|site-start\.d|site-start\.el))$' {common,
 # Remove old icon
 rm %{buildroot}%{_datadir}/icons/hicolor/scalable/mimetypes/emacs-document23.svg
 
-# Install the pdmp with fingerprints
-pgtk_pdmp="emacs-$(./build-pgtk/src/emacs --fingerprint 2>&1 | sed 's/.* //').pdmp"
-install -p -m 0644 build-pgtk/src/emacs.pdmp %{buildroot}%{emacs_libexecdir}/${pgtk_pdmp}
-
 # Install native compiled Lisp of all builds
-pgtk_comp_native_ver=$(ls -1 build-pgtk/native-lisp)
-cp -ar build-pgtk/native-lisp/${pgtk_comp_native_ver} %{buildroot}%{native_lisp}
 (TOPDIR=${PWD}
  cd %{buildroot}
- find .%{native_lisp}/${pgtk_comp_native_ver} \( -type f -name '*eln' -fprintf $TOPDIR/pgtk-eln-filelist "%%%%attr(755,-,-) %%p\n" \) -o \( -type d -fprintf $TOPDIR/pgtk-dirs "%%%%dir %%p\n" \)
+ find ".%{native_lisp}/$(ls -1 build-pgtk/native-lisp)" \
+      \( -type f -name '*eln' -fprintf "$TOPDIR/pgtk-filelist" "%%%%attr(755,-,-) %%p\n" \) \
+      -o \( -type d -fprintf "$TOPDIR/pgtk-dirlist" "%%%%dir %%p\n" \)
 )
-echo %{emacs_libexecdir}/${pgtk_pdmp} >> pgtk-eln-filelist
+echo "%{emacs_libexecdir}/emacs-$(./build-pgtk/src/emacs --fingerprint).pdmp" \
+     >> pgtk-filelist
 
 %if %{with gtkx11}
-gtkx11_pdmp="emacs-$(./build-gtk+x11/src/emacs --fingerprint 2>&1 | sed 's/.* //').pdmp"
-install -p -m 0644 build-gtk+x11/src/emacs.pdmp %{buildroot}%{emacs_libexecdir}/${gtkx11_pdmp}
-
-gtkx11_comp_native_ver=$(ls -1 build-gtk+x11/native-lisp)
-cp -ar build-gtk+x11/native-lisp/${gtkx11_comp_native_ver} %{buildroot}%{native_lisp}
 (TOPDIR=${PWD}
  cd %{buildroot}
- find .%{native_lisp}/${gtkx11_comp_native_ver} \( -type f -name '*eln' -fprintf $TOPDIR/gtk+x11-eln-filelist "%%%%attr(755,-,-) %%p\n" \) -o \( -type d -fprintf $TOPDIR/gtk+x11-dirs "%%%%dir %%p\n" \)
+ find ".%{native_lisp}/$(ls -1 build-gtk+x11/native-lisp)" \
+      \( -type f -name '*eln' -fprintf "$TOPDIR/gtk+x11-filelist" "%%%%attr(755,-,-) %%p\n" \) \
+      -o \( -type d -fprintf "$TOPDIR/gtk+x11-dirlist" "%%%%dir %%p\n" \)
 )
-echo %{emacs_libexecdir}/${gtkx11_pdmp} >> gtk+x11-eln-filelist
+echo "%{emacs_libexecdir}/emacs-$(./build-gtk+x11/src/emacs --fingerprint).pdmp" \
+     >> gtk+x11-filelist
 %endif
 
 %if %{with lucid}
-lucid_pdmp="emacs-$(./build-lucid/src/emacs --fingerprint 2>&1 | sed 's/.* //').pdmp"
-install -p -m 0644 build-lucid/src/emacs.pdmp %{buildroot}%{emacs_libexecdir}/${lucid_pdmp}
-
-lucid_comp_native_ver=$(ls -1 build-lucid/native-lisp)
-cp -ar build-lucid/native-lisp/${lucid_comp_native_ver} %{buildroot}%{native_lisp}
 (TOPDIR=${PWD}
  cd %{buildroot}
- find .%{native_lisp}/${lucid_comp_native_ver} \( -type f -name '*eln' -fprintf $TOPDIR/lucid-eln-filelist "%%%%attr(755,-,-) %%p\n" \) -o \( -type d -fprintf $TOPDIR/lucid-dirs "%%%%dir %%p\n" \)
+ find ".%{native_lisp}/$(ls -1 build-lucid/native-lisp)" \
+      \( -type f -name '*eln' -fprintf "$TOPDIR/lucid-filelist" "%%%%attr(755,-,-) %%p\n" \) \
+      -o \( -type d -fprintf "$TOPDIR/lucid-dirlist" "%%%%dir %%p\n" \)
 )
-echo %{emacs_libexecdir}/${lucid_pdmp} >> lucid-eln-filelist
+echo "%{emacs_libexecdir}/emacs-$(./build-lucid/src/emacs --fingerprint).pdmp" \
+     >> lucid-filelist
 %endif
 
 %if %{with nw}
-nw_pdmp="emacs-$(./build-nw/src/emacs --fingerprint 2>&1 | sed 's/.* //').pdmp"
-install -p -m 0644 build-nw/src/emacs.pdmp %{buildroot}%{emacs_libexecdir}/${nw_pdmp}
-
-nw_comp_native_ver=$(ls -1 build-nw/native-lisp)
-cp -ar build-nw/native-lisp/${nw_comp_native_ver} %{buildroot}%{native_lisp}
 (TOPDIR=${PWD}
  cd %{buildroot}
- find .%{native_lisp}/${nw_comp_native_ver} \( -type f -name '*eln' -fprintf $TOPDIR/nw-eln-filelist "%%%%attr(755,-,-) %%p\n" \) -o \( -type d -fprintf $TOPDIR/nw-dirs "%%%%dir %%p\n" \)
+ find ".%{native_lisp}/$(ls -1 build-nw/native-lisp)" \
+      \( -type f -name '*eln' -fprintf "$TOPDIR/nw-filelist" "%%%%attr(755,-,-) %%p\n" \) \
+      -o \( -type d -fprintf "$TOPDIR/nw-dirlist" "%%%%dir %%p\n" \)
 )
-echo %{emacs_libexecdir}/${nw_pdmp} >> nw-eln-filelist
+echo "%{emacs_libexecdir}/emacs-$(./build-nw/src/emacs --fingerprint).pdmp" \
+     >> nw-filelist
 %endif
 
 # remove leading . from filelists
-sed -i -e "s|\.%{native_lisp}|%{native_lisp}|" *-eln-filelist *-dirs
+sed -i -e "s|\.%{native_lisp}|%{native_lisp}|" *-filelist *-dirlist
 
 # remove exec permissions from eln files to prevent the debuginfo extractor from
 # trying to extract debuginfo from them
@@ -615,6 +618,8 @@ find %{buildroot}%{_libdir}/ -name '*eln' -type f | xargs chmod -x
 # ensure native files are newer than byte-code files
 # see: https://bugzilla.redhat.com/show_bug.cgi?id=2157979#c11
 find %{buildroot}%{_libdir}/ -name '*eln' -type f | xargs touch
+
+export QA_SKIP_BUILD_ROOT=0
 
 
 %check
@@ -711,29 +716,29 @@ fi
        --slave %{_mandir}/man1/etags.1.gz emacs.etags.man %{_mandir}/man1/etags.emacs.1.gz || :
 
 
-%files -f pgtk-eln-filelist -f pgtk-dirs
-%attr(0755,-,-) %ghost %{_bindir}/emacs
+%files -f pgtk-filelist -f pgtk-dirlist
+%ghost %{_bindir}/emacs
 %{_bindir}/emacs-%{version}-pgtk
 %{_bindir}/emacs-pgtk
 %{_datadir}/glib-2.0/schemas/org.gnu.emacs.defaults.gschema.xml
 
 %if %{with gtkx11}
-%files gtk+x11 -f gtk+x11-eln-filelist -f gtk+x11-dirs
-%attr(0755,-,-) %ghost %{_bindir}/emacs
+%files gtk+x11 -f gtk+x11-filelist -f gtk+x11-dirlist
+%ghost %{_bindir}/emacs
 %{_bindir}/emacs-%{version}-gtk+x11
 %{_bindir}/emacs-gtk+x11
 %endif
 
 %if %{with lucid}
-%files lucid -f lucid-eln-filelist -f lucid-dirs
-%attr(0755,-,-) %ghost %{_bindir}/emacs
+%files lucid -f lucid-filelist -f lucid-dirlist
+%ghost %{_bindir}/emacs
 %{_bindir}/emacs-%{version}-lucid
 %{_bindir}/emacs-lucid
 %endif
 
 %if %{with nw}
-%files nw -f nw-eln-filelist -f nw-dirs
-%attr(0755,-,-) %ghost %{_bindir}/emacs
+%files nw -f nw-filelist -f nw-dirlist
+%ghost %{_bindir}/emacs
 %{_bindir}/emacs-%{version}-nox
 %{_bindir}/emacs-%{version}-nw
 %{_bindir}/emacs-nox
