@@ -1,0 +1,30 @@
+From 75ca15f2a3146b17fde5e2a50ad9102c6108ba7f Mon Sep 17 00:00:00 2001
+From: Stefan Kangas <stefankangas@gmail.com>
+Date: Sun, 23 Jun 2024 20:54:22 +0200
+Subject: [PATCH] Fix failing help-fns-test
+
+* test/lisp/help-fns-tests.el (help-fns-test-lisp-defun):
+Fix failing test.
+---
+ test/lisp/help-fns-tests.el | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
+
+diff --git a/test/lisp/help-fns-tests.el b/test/lisp/help-fns-tests.el
+index c3e8ca49723..fabf1959658 100644
+--- a/test/lisp/help-fns-tests.el
++++ b/test/lisp/help-fns-tests.el
+@@ -63,9 +63,8 @@ help-fns-test-lisp-macro
+     (should (string-match regexp result))))
+ 
+ (ert-deftest help-fns-test-lisp-defun ()
+-  (let ((regexp (if (featurep 'native-compile)
+-                    "a native-compiled Lisp function in .+subr\\.el"
+-                  "a byte-compiled Lisp function in .+subr\\.el"))
++  (let ((regexp (rx "a " (or "byte-compiled" "native-compiled")
++                    " Lisp function in " nonl "subr.el" nonl))
+         (result (help-fns-tests--describe-function 'last)))
+     (should (string-match regexp result))))
+ 
+-- 
+2.45.2
+

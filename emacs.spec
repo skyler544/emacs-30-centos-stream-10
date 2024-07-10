@@ -36,8 +36,11 @@ Patch3:        emacs-libdir-vs-systemd.patch
 Patch4:        emacs-desktop.patch
 Patch5:        emacs-pgtk-on-x-error-message.patch
 
-# Skip failing tests:
+# Skip failing tests (patches taken from Emacs Git)
+Patch:         0001-Fix-failing-help-fns-test.patch
 Patch:         0001-Fix-flymake-tests-with-GCC-14.patch
+
+# Skip failing test (need to work out why this fails when building an RPM)
 Patch:         0001-Tag-process-tests-multiple-threads-waiting-unstable-.patch
 
 BuildRequires: alsa-lib-devel
