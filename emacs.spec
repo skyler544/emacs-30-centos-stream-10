@@ -515,7 +515,9 @@ desktop-file-install --dir=%{buildroot}%{_datadir}/applications \
 install -p -m 0755 %SOURCE9 %{buildroot}%{_bindir}/emacs-desktop
 
 # Remove duplicate desktop-related files
-rm %{buildroot}%{_datadir}/%{name}/%{version}/etc/%{name}.{desktop,service}
+rm %{buildroot}%{_datadir}/%{name}/%{version}/etc/%{name}.{desktop,metainfo.xml,service} \
+   %{buildroot}%{_datadir}/%{name}/%{version}/etc/%{name}-mail.desktop \
+   %{buildroot}%{_datadir}/%{name}/%{version}/etc/org.gnu.emacs.defaults.gschema.xml
 
 # We don't ship the client variants yet
 # https://src.fedoraproject.org/rpms/emacs/pull-request/12
