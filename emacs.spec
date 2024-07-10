@@ -1,5 +1,3 @@
-%global _hardened_build 1
-
 %bcond gpm %[!(0%{?rhel} >= 10)]
 %bcond webkit %[!(0%{?rhel} >= 10)]
 
