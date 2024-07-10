@@ -24,15 +24,19 @@ Source6:       default.el
 Source7:       emacs-terminal.desktop
 Source8:       emacs-terminal.sh
 Source9:       emacs-desktop.sh
+
 # rhbz#713600
-Patch1:        emacs-spellchecker.patch
-Patch2:        emacs-system-crypto-policies.patch
+Patch:         emacs-spellchecker.patch
+
+Patch:         emacs-system-crypto-policies.patch
+
 # causes a dependency on pkgconfig(systemd)
 # => remove it if we stop using this patch
-Patch3:        emacs-libdir-vs-systemd.patch
+Patch:         emacs-libdir-vs-systemd.patch
+
 # Avoid using the pure GTK build on X11 where it is unsupported:
-Patch4:        emacs-desktop.patch
-Patch5:        emacs-pgtk-on-x-error-message.patch
+Patch:         emacs-desktop.patch
+Patch:         emacs-pgtk-on-x-error-message.patch
 
 # Skip failing tests (patches taken from Emacs Git)
 Patch:         0001-Fix-failing-help-fns-test.patch
