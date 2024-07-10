@@ -1,3 +1,5 @@
+# This file is encoded in UTF-8.  -*- coding: utf-8 -*-
+
 %bcond gpm %[!(0%{?rhel} >= 10)]
 %bcond webkit %[!(0%{?rhel} >= 10)]
 
@@ -5,7 +7,6 @@
 %bcond_without lucid
 %bcond_without nw
 
-# This file is encoded in UTF-8.  -*- coding: utf-8 -*-
 Summary:       GNU Emacs text editor
 Name:          emacs
 Epoch:         1
