@@ -43,9 +43,6 @@ Patch:         emacs-pgtk-on-x-error-message.patch
 Patch:         0001-Fix-failing-help-fns-test.patch
 Patch:         0001-Fix-flymake-tests-with-GCC-14.patch
 
-# Skip failing test (need to work out why this fails when building an RPM)
-Patch:         0001-Tag-process-tests-multiple-threads-waiting-unstable-.patch
-
 BuildRequires: alsa-lib-devel
 BuildRequires: atk-devel
 BuildRequires: autoconf
@@ -621,6 +618,10 @@ find %{buildroot}%{_libdir}/ -name '*eln' -type f | xargs touch
 
 
 %check
+# A number of tests that don't work on GNU EMBA are also unstable when
+# run in Koji.
+export EMACS_EMBA_CI=1
+
 cd build-pgtk
 %make_build check
 cd ..
