@@ -664,6 +664,11 @@ fi
 
 %posttrans lucid
 /usr/sbin/alternatives --install %{_bindir}/emacs emacs %{_bindir}/emacs-lucid 70 || :
+# The preun scriptlet of packages before 29.4-5 will remove this symlink
+# after it has been installed, so we may need to put it back:
+if [ $1 = 2 && ! -h %{_bindir}/emacs-lucid ]; then
+    ln -s %emacs-%{version}-nw %{_bindir}/emacs-lucid
+fi
 %endif
 
 %if %{with gtkx11}
@@ -674,6 +679,11 @@ fi
 
 %posttrans gtk+x11
 /usr/sbin/alternatives --install %{_bindir}/emacs emacs %{_bindir}/emacs-gtk+x11 75 || :
+# The preun scriptlet of packages before 29.4-5 will remove this symlink
+# after it has been installed, so we may need to put it back:
+if [ $1 = 2 && ! -h %{_bindir}/emacs-gtk+x11 ]; then
+    ln -s %emacs-%{version}-nw %{_bindir}/emacs-gtk+x11
+fi
 %endif
 
 %if %{with nw}
@@ -684,6 +694,11 @@ fi
 
 %posttrans nw
 /usr/sbin/alternatives --install %{_bindir}/emacs emacs %{_bindir}/emacs-nw 70 || :
+# The preun scriptlet of packages before 29.4-5 will remove this symlink
+# after it has been installed, so we may need to put it back:
+if [ $1 = 2 && ! -h %{_bindir}/emacs-nw ]; then
+    ln -s %emacs-%{version}-nw %{_bindir}/emacs-nw
+fi
 %endif
 
 %preun common
