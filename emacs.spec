@@ -660,8 +660,8 @@ fi
 /usr/sbin/alternatives --install %{_bindir}/emacs emacs %{_bindir}/emacs-lucid 70 || :
 # The preun scriptlet of packages before 29.4-5 will remove this symlink
 # after it has been installed, so we may need to put it back:
-if [ $1 = 2 && ! -h %{_bindir}/emacs-lucid ]; then
-    ln -s %emacs-%{version}-nw %{_bindir}/emacs-lucid
+if [ $1 = 2 -a ! -h %{_bindir}/emacs-lucid ]; then
+    ln -s emacs-%{version}-lucid %{_bindir}/emacs-lucid
 fi
 %endif
 
@@ -675,8 +675,8 @@ fi
 /usr/sbin/alternatives --install %{_bindir}/emacs emacs %{_bindir}/emacs-gtk+x11 75 || :
 # The preun scriptlet of packages before 29.4-5 will remove this symlink
 # after it has been installed, so we may need to put it back:
-if [ $1 = 2 && ! -h %{_bindir}/emacs-gtk+x11 ]; then
-    ln -s %emacs-%{version}-nw %{_bindir}/emacs-gtk+x11
+if [ $1 = 2 -a ! -h %{_bindir}/emacs-gtk+x11 ]; then
+    ln -s emacs-%{version}-gtk+x11 %{_bindir}/emacs-gtk+x11
 fi
 %endif
 
@@ -690,8 +690,8 @@ fi
 /usr/sbin/alternatives --install %{_bindir}/emacs emacs %{_bindir}/emacs-nw 70 || :
 # The preun scriptlet of packages before 29.4-5 will remove this symlink
 # after it has been installed, so we may need to put it back:
-if [ $1 = 2 && ! -h %{_bindir}/emacs-nw ]; then
-    ln -s %emacs-%{version}-nw %{_bindir}/emacs-nw
+if [ $1 = 2 -a ! -h %{_bindir}/emacs-nw ]; then
+    ln -s emacs-%{version}-nw %{_bindir}/emacs-nw
 fi
 %endif
 
