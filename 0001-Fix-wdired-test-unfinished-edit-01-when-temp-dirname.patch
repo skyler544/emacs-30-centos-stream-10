@@ -1,0 +1,29 @@
+From 90734f5a3ba9998886e0b03382878a2fb514d015 Mon Sep 17 00:00:00 2001
+From: Peter Oliver <git@mavit.org.uk>
+Date: Fri, 12 Jul 2024 10:52:23 +0100
+Subject: [PATCH] Fix wdired-test-unfinished-edit-01 when temp dirname contains
+ "foo"
+
+* test/lisp/wdired-tests.el (wdired-test-unfinished-edit-01): Don't
+modify the random directory name if, by chance, it happens to contain
+the substring "foo".
+---
+ test/lisp/wdired-tests.el | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/test/lisp/wdired-tests.el b/test/lisp/wdired-tests.el
+index f7bff743058..f6d2194e998 100644
+--- a/test/lisp/wdired-tests.el
++++ b/test/lisp/wdired-tests.el
+@@ -114,7 +114,7 @@ wdired-test-unfinished-edit-01
+     (setq test-dir (file-truename test-dir))
+     (let* ((test-file (concat (file-name-as-directory test-dir) "foo.c"))
+            (replace "bar")
+-           (new-file (string-replace "foo" replace test-file)))
++           (new-file (string-replace "/foo" (concat "/" replace) test-file)))
+       (write-region "" nil test-file nil 'silent)
+       (let ((buf (find-file-noselect test-dir)))
+         (unwind-protect
+-- 
+2.45.2
+

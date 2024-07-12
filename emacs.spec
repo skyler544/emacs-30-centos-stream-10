@@ -43,6 +43,9 @@ Patch:         emacs-pgtk-on-x-error-message.patch
 Patch:         0001-Fix-failing-help-fns-test.patch
 Patch:         0001-Fix-flymake-tests-with-GCC-14.patch
 
+# Fix intermittently failing test (https://debbugs.gnu.org/cgi/bugreport.cgi?bug=72073)
+Patch:         0001-Fix-wdired-test-unfinished-edit-01-when-temp-dirname.patch
+
 ExcludeArch: %{ix86}
 
 BuildRequires: alsa-lib-devel
