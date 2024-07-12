@@ -43,6 +43,8 @@ Patch:         emacs-pgtk-on-x-error-message.patch
 Patch:         0001-Fix-failing-help-fns-test.patch
 Patch:         0001-Fix-flymake-tests-with-GCC-14.patch
 
+ExcludeArch: %{ix86}
+
 BuildRequires: alsa-lib-devel
 BuildRequires: atk-devel
 BuildRequires: autoconf
@@ -108,10 +110,6 @@ BuildRequires: Xaw3d-devel
 
 # for Patch3
 BuildRequires: pkgconfig(systemd)
-
-%ifarch %{ix86}
-BuildRequires: util-linux
-%endif
 
 # Emacs doesn't run without a font, rhbz#732422
 Requires:      google-noto-sans-mono-vf-fonts
@@ -282,12 +280,6 @@ rm -f lisp/play/tetris.el lisp/play/tetris.elc
 rm -f lisp/play/pong.el lisp/play/pong.elc
 sed -i "s/'tetris/'doctor/" test/src/doc-tests.el
 
-%ifarch %{ix86}
-%define setarch setarch %{_arch} -R
-%else
-%define setarch %{nil}
-%endif
-
 # Avoid duplicating doc files in the common subpackage
 ln -s ../../%{name}/%{version}/etc/COPYING doc
 ln -s ../../%{name}/%{version}/etc/NEWS doc
@@ -323,8 +315,8 @@ LDFLAGS=-Wl,-z,relro;  export LDFLAGS;
            --with-xft \
            --with-xinput2 \
            --with-xpm
-%{setarch} %make_build bootstrap
-%{setarch} %make_build
+%make_build bootstrap
+%make_build
 rm src/emacs-%{version}.*
 cd ..
 %endif
@@ -342,8 +334,8 @@ ln -s ../configure .
            --with-gpm=no \
 %endif
            --with-x=no
-%{setarch} %make_build bootstrap
-%{setarch} %make_build
+%make_build bootstrap
+%make_build
 rm src/emacs-%{version}.*
 cd ..
 %endif
@@ -374,8 +366,8 @@ LDFLAGS=-Wl,-z,relro;  export LDFLAGS;
            --with-xinput2 \
            --with-xpm \
            %{?with_webkit:--with-xwidgets}
-%{setarch} %make_build bootstrap
-%{setarch} %make_build
+%make_build bootstrap
+%make_build
 rm src/emacs-%{version}.*
 cd ..
 %endif
@@ -404,9 +396,8 @@ LDFLAGS=-Wl,-z,relro;  export LDFLAGS;
            --with-webp \
            --with-xpm \
            %{?with_webkit:--with-xwidgets}
-%{setarch} %make_build bootstrap
-%{setarch} %make_build
-ls -l src/emacs-%{version}.*
+%make_build bootstrap
+%make_build
 rm src/emacs-%{version}.*
 cd ..
 
