@@ -46,6 +46,12 @@ Patch:         0001-Fix-flymake-tests-with-GCC-14.patch
 # Fix intermittently failing test (https://debbugs.gnu.org/cgi/bugreport.cgi?bug=72073)
 Patch:         0001-Fix-wdired-test-unfinished-edit-01-when-temp-dirname.patch
 
+# Workaround for https://bugzilla.redhat.com/show_bug.cgi?id=2276822
+# (https://debbugs.gnu.org/cgi/bugreport.cgi?bug=63555).  If GDK ever
+# gets any new backends, this patch may need extending.
+Patch:         0001-Apply-display-kluge-for-PGTK-too.patch
+Patch:         0002-Fall-back-to-the-terminal-from-pure-GTK-when-no-disp.patch
+
 ExcludeArch: %{ix86}
 
 BuildRequires: alsa-lib-devel

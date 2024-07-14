@@ -1,0 +1,50 @@
+From 2f348ffee3777a8e2b02814d8cc50d282d98d366 Mon Sep 17 00:00:00 2001
+From: Peter Oliver <git@mavit.org.uk>
+Date: Sun, 14 Jul 2024 21:50:33 +0100
+Subject: [PATCH 1/2] Apply --display kluge for PGTK too
+
+* src/emacs.c (main): The --display option needs the same handling
+with the PGTK backend as it does with the X11 backends.  (Bug#72118)
+---
+ src/emacs.c | 4 ++--
+ src/lisp.h  | 2 +-
+ 2 files changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/src/emacs.c b/src/emacs.c
+index 712826d57b7..ec284b16f8d 100644
+--- a/src/emacs.c
++++ b/src/emacs.c
+@@ -181,7 +181,7 @@ #define MAIN_PROGRAM
+    data on the first attempt to change it inside asynchronous code.  */
+ bool running_asynch_code;
+ 
+-#if defined (HAVE_X_WINDOWS) || defined (HAVE_NS)
++#if defined (HAVE_X_WINDOWS) || defined (HAVE_PGTK) || defined (HAVE_NS)
+ /* If true, -d was specified, meaning we're using some window system.  */
+ bool display_arg;
+ #endif
+@@ -2014,7 +2014,7 @@ main (int argc, char **argv)
+   {
+     int count_before = skip_args;
+ 
+-#ifdef HAVE_X_WINDOWS
++#if defined (HAVE_X_WINDOWS) || defined (HAVE_PGTK)
+     char *displayname = 0;
+ 
+     /* Skip any number of -d options, but only use the last one.  */
+diff --git a/src/lisp.h b/src/lisp.h
+index 5fa48cec2f0..05daceb5dff 100644
+--- a/src/lisp.h
++++ b/src/lisp.h
+@@ -4889,7 +4889,7 @@ fast_c_string_match_ignore_case (Lisp_Object regexp,
+ extern char **initial_argv;
+ extern int initial_argc;
+ extern char const *emacs_wd;
+-#if defined (HAVE_X_WINDOWS) || defined (HAVE_NS)
++#if defined (HAVE_X_WINDOWS) || defined (HAVE_PGTK) || defined (HAVE_NS)
+ extern bool display_arg;
+ #endif
+ extern Lisp_Object decode_env_path (const char *, const char *, bool);
+-- 
+2.45.2
+
