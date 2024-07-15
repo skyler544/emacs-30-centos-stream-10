@@ -49,6 +49,10 @@ Patch:         0001-Fix-wdired-test-unfinished-edit-01-when-temp-dirname.patch
 # Fix intermittently failing test (https://debbugs.gnu.org/cgi/bugreport.cgi?bug=72120)
 Patch:         0001-Fix-intermittent-failure-of-dired-test-bug27243-02.patch
 
+# Skip intermittently failing tests
+Patch:         0002-Test-eshell-test-subcommand-reset-in-pipeline-is-uns.patch
+Patch:         0003-Mark-multiple-mml-sec-tests-as-unstable-when-built-i.patch
+
 # Workaround for https://bugzilla.redhat.com/show_bug.cgi?id=2276822
 # (https://debbugs.gnu.org/cgi/bugreport.cgi?bug=63555).  If GDK ever
 # gets any new backends, this patch may need extending.
