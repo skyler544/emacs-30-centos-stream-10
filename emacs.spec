@@ -48,6 +48,7 @@ Patch:         0001-Fix-wdired-test-unfinished-edit-01-when-temp-dirname.patch
 
 # Fix intermittently failing test (https://debbugs.gnu.org/cgi/bugreport.cgi?bug=72120)
 Patch:         0001-Fix-intermittent-failure-of-dired-test-bug27243-02.patch
+Patch:         0004-Try-harder-to-stabalise-dired-test-bug27243-02.patch
 
 # Skip intermittently failing tests
 Patch:         0002-Test-eshell-test-subcommand-reset-in-pipeline-is-uns.patch

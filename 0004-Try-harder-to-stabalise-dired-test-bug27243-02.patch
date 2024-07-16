@@ -1,0 +1,27 @@
+From 456525d14a6778ab624f4e329627cb7adfb0d053 Mon Sep 17 00:00:00 2001
+From: Peter Oliver <git@mavit.org.uk>
+Date: Wed, 17 Jul 2024 00:06:02 +0100
+Subject: [PATCH 4/4] Try harder to stabalise dired-test-bug27243-02
+
+* test/lisp/dired-tests.el (dired-test-bug27243-02): Hide file
+details, to prevent changes to the size or contents of the parent
+directory from affecting the test.
+---
+ test/lisp/dired-tests.el | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/test/lisp/dired-tests.el b/test/lisp/dired-tests.el
+index ea47043dfc5..6bfb2d56303 100644
+--- a/test/lisp/dired-tests.el
++++ b/test/lisp/dired-tests.el
+@@ -198,6 +198,7 @@ dired-test-bug27243-02
+       (if (eq system-type 'windows-nt)
+           (setq test-dir (file-truename test-dir)))
+       (with-current-buffer (find-file-noselect test-dir)
++        (dired-hide-details-mode)
+         (make-directory "test-subdir"))
+       (push (dired test-dir) buffers)
+       (unwind-protect
+-- 
+2.45.2
+
