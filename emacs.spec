@@ -59,8 +59,6 @@ Patch:         0003-Mark-multiple-mml-sec-tests-as-unstable-when-built-i.patch
 Patch:         0001-Apply-display-kluge-for-PGTK-too.patch
 Patch:         0002-Fall-back-to-the-terminal-from-pure-GTK-when-no-disp.patch
 
-ExcludeArch: %{ix86}
-
 BuildRequires: alsa-lib-devel
 BuildRequires: atk-devel
 BuildRequires: autoconf
@@ -126,6 +124,10 @@ BuildRequires: Xaw3d-devel
 
 # for Patch3
 BuildRequires: pkgconfig(systemd)
+
+%ifarch %{ix86}
+BuildRequires: util-linux
+%endif
 
 # Emacs doesn't run without a font, rhbz#732422
 Requires:      google-noto-sans-mono-vf-fonts
@@ -296,6 +298,12 @@ rm -f lisp/play/tetris.el lisp/play/tetris.elc
 rm -f lisp/play/pong.el lisp/play/pong.elc
 sed -i "s/'tetris/'doctor/" test/src/doc-tests.el
 
+%ifarch %{ix86}
+%define setarch setarch %{_arch} -R
+%else
+%define setarch %{nil}
+%endif
+
 # Avoid duplicating doc files in the common subpackage
 ln -s ../../%{name}/%{version}/etc/COPYING doc
 ln -s ../../%{name}/%{version}/etc/NEWS doc
@@ -331,8 +339,8 @@ LDFLAGS=-Wl,-z,relro;  export LDFLAGS;
            --with-xft \
            --with-xinput2 \
            --with-xpm
-%make_build bootstrap
-%make_build
+%{setarch} %make_build bootstrap
+%{setarch} %make_build
 rm src/emacs-%{version}.*
 cd ..
 %endif
@@ -350,8 +358,8 @@ ln -s ../configure .
            --with-gpm=no \
 %endif
            --with-x=no
-%make_build bootstrap
-%make_build
+%{setarch} %make_build bootstrap
+%{setarch} %make_build
 rm src/emacs-%{version}.*
 cd ..
 %endif
@@ -382,8 +390,8 @@ LDFLAGS=-Wl,-z,relro;  export LDFLAGS;
            --with-xinput2 \
            --with-xpm \
            %{?with_webkit:--with-xwidgets}
-%make_build bootstrap
-%make_build
+%{setarch} %make_build bootstrap
+%{setarch} %make_build
 rm src/emacs-%{version}.*
 cd ..
 %endif
@@ -412,8 +420,8 @@ LDFLAGS=-Wl,-z,relro;  export LDFLAGS;
            --with-webp \
            --with-xpm \
            %{?with_webkit:--with-xwidgets}
-%make_build bootstrap
-%make_build
+%{setarch} %make_build bootstrap
+%{setarch} %make_build
 rm src/emacs-%{version}.*
 cd ..
 
