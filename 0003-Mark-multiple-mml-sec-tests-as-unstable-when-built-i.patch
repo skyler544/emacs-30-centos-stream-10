@@ -1,18 +1,18 @@
-From 8d5348d6be9dadc9a98a66a70f08c995575deda1 Mon Sep 17 00:00:00 2001
+From 84174667ab624d16ba4c4f806d25e305ab919b80 Mon Sep 17 00:00:00 2001
 From: Peter Oliver <git@mavit.org.uk>
 Date: Mon, 15 Jul 2024 16:19:10 +0100
-Subject: [PATCH 3/3] Mark multiple mml-sec tests as unstable when built in an
+Subject: [PATCH 3/4] Mark multiple mml-sec tests as unstable when built in an
  RPM
 
 * test/lisp/gnus/mml-sec-tests.el: Mark unstable tests which have been
 seen to intermittently fail at
 https://koji.fedoraproject.org/koji/packageinfo?packageID=560
 ---
- test/lisp/gnus/mml-sec-tests.el | 4 ++++
- 1 file changed, 4 insertions(+)
+ test/lisp/gnus/mml-sec-tests.el | 5 +++++
+ 1 file changed, 5 insertions(+)
 
 diff --git a/test/lisp/gnus/mml-sec-tests.el b/test/lisp/gnus/mml-sec-tests.el
-index 7abd1bd65a3..f5a412cf2a4 100644
+index 7abd1bd65a3..a381ff8e94d 100644
 --- a/test/lisp/gnus/mml-sec-tests.el
 +++ b/test/lisp/gnus/mml-sec-tests.el
 @@ -278,6 +278,7 @@ mml-secure-key-checks
@@ -23,7 +23,15 @@ index 7abd1bd65a3..f5a412cf2a4 100644
    (skip-unless (test-conf))
    (mml-secure-test-fixture
     (lambda ()
-@@ -407,6 +408,7 @@ mml-secure-select-preferred-keys-2
+@@ -369,6 +370,7 @@ mml-secure-find-usable-keys-2
+ 
+ (ert-deftest mml-secure-select-preferred-keys-1 ()
+   "If only one key exists for an e-mail address, it is the preferred one."
++  :tags (if (getenv "RPM_BUILD_ROOT") '(:unstable))
+   (skip-unless (test-conf))
+   (mml-secure-test-fixture
+    (lambda ()
+@@ -407,6 +409,7 @@ mml-secure-select-preferred-keys-2
  
  (ert-deftest mml-secure-select-preferred-keys-3 ()
    "Expired customized keys are removed if multiple keys are available."
@@ -31,7 +39,7 @@ index 7abd1bd65a3..f5a412cf2a4 100644
    (skip-unless (test-conf))
    (mml-secure-test-fixture
     (lambda ()
-@@ -581,6 +583,7 @@ mml-secure-test-en-decrypt-with-passphrase
+@@ -581,6 +584,7 @@ mml-secure-test-en-decrypt-with-passphrase
  (ert-deftest mml-secure-en-decrypt-1 ()
    "Encrypt message; then decrypt and test for expected result.
  In this test, the single matching key is chosen automatically."
@@ -39,7 +47,7 @@ index 7abd1bd65a3..f5a412cf2a4 100644
    (skip-unless (test-conf))
    (dolist (method (enc-standards) nil)
      ;; no-exp@example.org with single encryption key
-@@ -625,6 +628,7 @@ mml-secure-en-decrypt-3
+@@ -625,6 +629,7 @@ mml-secure-en-decrypt-3
  (ert-deftest mml-secure-en-decrypt-4 ()
    "Encrypt message; then decrypt and test for expected result.
  In this test, encrypt-to-self variables are set to lists."
