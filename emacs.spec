@@ -319,8 +319,6 @@ export CFLAGS="-DMAIL_USE_LOCKF %{build_cflags}"
 mkdir build-lucid && cd build-lucid
 ln -s ../configure .
 
-LDFLAGS=-Wl,-z,relro;  export LDFLAGS;
-
 %configure --with-cairo \
            --with-dbus \
            --with-gif \
@@ -370,8 +368,6 @@ cd ..
 mkdir build-gtk+x11 && cd build-gtk+x11
 ln -s ../configure .
 
-LDFLAGS=-Wl,-z,relro;  export LDFLAGS;
-
 %configure --with-cairo \
            --with-dbus \
            --with-gif \
@@ -400,8 +396,6 @@ cd ..
 # Build pure GTK binary
 mkdir build-pgtk && cd build-pgtk
 ln -s ../configure .
-
-LDFLAGS=-Wl,-z,relro;  export LDFLAGS;
 
 %configure --with-cairo \
            --with-dbus \
