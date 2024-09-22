@@ -1,8 +1,6 @@
 # This file is encoded in UTF-8.  -*- coding: utf-8 -*-
 
 %bcond gpm %[!(0%{?rhel} >= 10)]
-%bcond webkit %[!(0%{?rhel} >= 10)]
-
 %bcond_without gtkx11
 %bcond_without lucid
 %bcond_without nw
@@ -102,10 +100,6 @@ BuildRequires: zlib-devel
 
 %if %{with gpm}
 BuildRequires: gpm-devel
-%endif
-
-%if %{with webkit}
-BuildRequires: webkit2gtk4.1-devel
 %endif
 
 %if %{with lucid} || %{with gtkx11}
@@ -385,7 +379,6 @@ ln -s ../configure .
            --with-x-toolkit=gtk3 \
            --with-xinput2 \
            --with-xpm \
-           %{?with_webkit:--with-xwidgets}
 %{setarch} %make_build bootstrap
 %{setarch} %make_build
 rm src/emacs-%{version}.*
@@ -413,7 +406,6 @@ ln -s ../configure .
            --with-tree-sitter \
            --with-webp \
            --with-xpm \
-           %{?with_webkit:--with-xwidgets}
 %{setarch} %make_build bootstrap
 %{setarch} %make_build
 rm src/emacs-%{version}.*
