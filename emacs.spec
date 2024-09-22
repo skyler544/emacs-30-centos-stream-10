@@ -378,7 +378,7 @@ ln -s ../configure .
            --with-webp \
            --with-x-toolkit=gtk3 \
            --with-xinput2 \
-           --with-xpm \
+           --with-xpm
 %{setarch} %make_build bootstrap
 %{setarch} %make_build
 rm src/emacs-%{version}.*
@@ -405,7 +405,7 @@ ln -s ../configure .
            --with-tiff \
            --with-tree-sitter \
            --with-webp \
-           --with-xpm \
+           --with-xpm
 %{setarch} %make_build bootstrap
 %{setarch} %make_build
 rm src/emacs-%{version}.*
