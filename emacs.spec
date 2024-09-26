@@ -24,6 +24,9 @@ Source7:       emacs-terminal.desktop
 Source8:       emacs-terminal.sh
 Source9:       emacs-desktop.sh
 
+# Avoid trademark issues
+Patch:         0001-Pong-and-Tetris-are-excluded.patch
+
 # rhbz#713600
 Patch:         emacs-spellchecker.patch
 
@@ -279,18 +282,14 @@ Development header files for Emacs.
 cat '%{SOURCE2}' '%{SOURCE3}' > keyring
 %{gpgverify} --keyring=keyring --signature='%{SOURCE1}' --data='%{SOURCE0}'
 rm keyring
+
 %autosetup -p1
 
-autoconf
-
 # Avoid trademark issues
-grep -v "tetris.elc" lisp/Makefile.in > lisp/Makefile.in.new \
-   && mv lisp/Makefile.in.new lisp/Makefile.in
-grep -v "pong.elc" lisp/Makefile.in > lisp/Makefile.in.new \
-   && mv lisp/Makefile.in.new lisp/Makefile.in
-rm -f lisp/play/tetris.el lisp/play/tetris.elc
-rm -f lisp/play/pong.el lisp/play/pong.elc
-sed -i "s/'tetris/'doctor/" test/src/doc-tests.el
+rm lisp/play/pong.el lisp/play/pong.elc \
+   lisp/play/tetris.el lisp/play/tetris.elc
+
+autoconf
 
 %ifarch %{ix86}
 %define setarch setarch %{_arch} -R
