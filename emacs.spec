@@ -247,7 +247,7 @@ Requires:      libtree-sitter >= 0.22.5
 # treesit-install-language-grammar to be able to build the parsers for
 # us at runtime:
 Recommends:    ((gcc and gcc-c++) or clang)
-Recommends:    git
+Recommends:    /usr/bin/git
 
 Recommends:    libtree-sitter-java
 
