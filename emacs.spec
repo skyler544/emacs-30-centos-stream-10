@@ -134,7 +134,7 @@ Requires(preun): /usr/sbin/alternatives
 Requires(posttrans): /usr/sbin/alternatives
 Requires:      emacs-common = %{epoch}:%{version}-%{release}
 Provides:      emacs(bin) = %{epoch}:%{version}-%{release}
-Supplements:   (libwayland-server and emacs-common)
+Supplements:   ((libwayland-server and emacs-common) unless emacs-nw)
 
 %define site_lisp %{_datadir}/emacs/site-lisp
 %define site_start_d %{site_lisp}/site-start.d
@@ -163,7 +163,7 @@ Requires(preun): /usr/sbin/alternatives
 Requires(posttrans): /usr/sbin/alternatives
 Requires:      emacs-common = %{epoch}:%{version}-%{release}
 Provides:      emacs(bin) = %{epoch}:%{version}-%{release}
-Supplements:   (xorg-x11-server-Xorg and emacs-common)
+Supplements:   ((xorg-x11-server-Xorg and emacs-common) unless emacs-nw)
 
 %description gtk+x11
 %desc
