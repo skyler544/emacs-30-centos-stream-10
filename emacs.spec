@@ -283,7 +283,9 @@ cat '%{SOURCE2}' '%{SOURCE3}' > keyring
 %{gpgverify} --keyring=keyring --signature='%{SOURCE1}' --data='%{SOURCE0}'
 rm keyring
 
-%autosetup -p1
+%autosetup -N -c
+cd %{name}-%{version}
+%autopatch -p1
 
 # Avoid trademark issues
 rm lisp/play/pong.el lisp/play/pong.elc \
@@ -302,15 +304,26 @@ ln -s ../../%{name}/%{version}/etc/COPYING doc
 ln -s ../../%{name}/%{version}/etc/NEWS doc
 
 
+cd ..
+%if %{with lucid}
+cp -a %{name}-%{version} build-lucid
+%endif
+%if %{with nw}
+cp -a %{name}-%{version} build-nw
+%endif
+%if %{with gtkx11}
+cp -a %{name}-%{version} build-gtk+x11
+%endif
+mv %{name}-%{version} build-pgtk
+
+
 %build
 export CFLAGS="-DMAIL_USE_LOCKF %{build_cflags}"
 %set_build_flags
 
 %if %{with lucid}
 # Build Lucid binary
-mkdir build-lucid && cd build-lucid
-ln -s ../configure .
-
+cd build-lucid
 %configure --program-suffix=-lucid \
            --with-cairo \
            --with-dbus \
@@ -338,8 +351,7 @@ cd ..
 
 %if %{with nw}
 # Build binary without X support
-mkdir build-nw && cd build-nw
-ln -s ../configure .
+cd build-nw
 %configure --program-suffix=-nw \
            --with-json \
            --with-modules \
@@ -357,9 +369,7 @@ cd ..
 
 %if %{with gtkx11}
 # Build GTK/X11 binary
-mkdir build-gtk+x11 && cd build-gtk+x11
-ln -s ../configure .
-
+cd build-gtk+x11
 %configure --program-suffix=-gtk+x11 \
            --with-cairo \
            --with-dbus \
@@ -385,9 +395,7 @@ cd ..
 %endif
 
 # Build pure GTK binary
-mkdir build-pgtk && cd build-pgtk
-ln -s ../configure .
-
+cd build-pgtk
 %configure --with-cairo \
            --with-dbus \
            --with-gif \
@@ -746,15 +754,15 @@ fi
 %endif
 
 %files -n emacsclient
-%license etc/COPYING
+%license build-pgtk/etc/COPYING
 %{_bindir}/emacsclient
 %{_mandir}/man1/emacsclient.1*
 
 %files common -f common-filelist -f info-filelist
 %config(noreplace) %{_sysconfdir}/skel/.emacs
 %{_rpmconfigdir}/macros.d/macros.emacs
-%license etc/COPYING
-%doc doc/NEWS BUGS README
+%license build-pgtk/etc/COPYING
+%doc build-pgtk/doc/NEWS build-pgtk/BUGS build-pgtk/README
 %{_bindir}/ebrowse
 %{_bindir}/emacs-desktop
 %{_bindir}/etags.emacs
