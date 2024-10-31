@@ -19,9 +19,6 @@ Source3:       https://keys.openpgp.org/vks/v1/by-fingerprint/CEA1DE21AB108493CC
 Source4:       dotemacs.el
 Source5:       site-start.el
 Source6:       default.el
-# Emacs Terminal Mode, #551949, #617355
-Source7:       emacs-terminal.desktop
-Source8:       emacs-terminal.sh
 Source9:       emacs-desktop.sh
 
 # Avoid trademark issues
@@ -255,20 +252,6 @@ Recommends:    libtree-sitter-java
 %desc
 This package contains all the common files needed by emacs, emacs-gtk+x11,
 emacs-lucid, or emacs-nw.
-
-
-
-%package terminal
-Summary:       A desktop menu item for GNU Emacs terminal.
-Requires:      emacs = %{epoch}:%{version}-%{release}
-BuildArch:     noarch
-
-%description terminal
-Contains a desktop menu item running GNU Emacs terminal. Install
-emacs-terminal if you need a terminal with Malayalam support.
-
-Please note that emacs-terminal is a temporary package and it will be
-removed when another terminal becomes capable of handling Malayalam.
 
 
 %package devel
@@ -521,15 +504,8 @@ install -p -m 0644 emacs.pc %{buildroot}/%{pkgconfig}
 mkdir -p %{buildroot}%{_rpmconfigdir}/macros.d
 install -p -m 0644 macros.emacs %{buildroot}%{_rpmconfigdir}/macros.d/
 
-# Installing emacs-terminal binary
-install -p -m 755 %SOURCE8 %{buildroot}%{_bindir}/emacs-terminal
-
 # After everything is installed, remove info dir
 rm -f %{buildroot}%{_infodir}/dir
-
-# Install desktop files
-desktop-file-install --dir=%{buildroot}%{_datadir}/applications \
-                     %SOURCE7
 
 # Install a wrapper to avoid running the Wayland-only build on X11
 install -p -m 0755 %SOURCE9 %{buildroot}%{_bindir}/emacs-desktop
@@ -794,10 +770,6 @@ fi
 %attr(0644,root,root) %config(noreplace) %{site_lisp}/default.el
 %attr(0644,root,root) %config %{site_lisp}/site-start.el
 %{pkgconfig}/emacs.pc
-
-%files terminal
-%{_bindir}/emacs-terminal
-%{_datadir}/applications/emacs-terminal.desktop
 
 %files devel
 %{_includedir}/emacs-module.h
