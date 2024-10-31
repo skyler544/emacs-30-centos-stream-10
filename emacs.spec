@@ -155,7 +155,7 @@ GTK toolkit.
 %if %{with gtkx11}
 %package gtk+x11
 Summary:       GNU Emacs text editor with GTK toolkit X support
-Requires:      libgccjit
+Requires:      google-noto-sans-mono-vf-fonts
 Requires(preun): /usr/sbin/alternatives
 Requires(posttrans): /usr/sbin/alternatives
 Requires:      emacs-common = %{epoch}:%{version}-%{release}
