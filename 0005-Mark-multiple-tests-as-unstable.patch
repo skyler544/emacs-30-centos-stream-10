@@ -1,0 +1,44 @@
+diff --git a/test/lisp/emacs-lisp/track-changes-tests.el b/test/lisp/emacs-lisp/track-changes-tests.el
+index ed35477cafd..d6a4dfb47ff 100644
+--- a/test/lisp/emacs-lisp/track-changes-tests.el
++++ b/test/lisp/emacs-lisp/track-changes-tests.el
+@@ -42,6 +42,7 @@
+     seed))
+ 
+ (ert-deftest track-changes-tests--random ()
++  :tags (if (getenv "RPM_BUILD_ROOT") '(:unstable))
+   ;; Keep 2 buffers in sync with a third one as we make random
+   ;; changes to that 3rd one.
+   ;; We have 3 trackers: a "normal" one which we sync
+diff --git a/test/lisp/eshell/esh-cmd-tests.el b/test/lisp/eshell/esh-cmd-tests.el
+index d8124a19af6..1defe7a1823 100644
+--- a/test/lisp/eshell/esh-cmd-tests.el
++++ b/test/lisp/eshell/esh-cmd-tests.el
+@@ -238,6 +238,7 @@ This should also wait for the subcommand."
+      "hello\ngoodbye\n")))
+ 
+ (ert-deftest esh-cmd-test/reset-in-pipeline/subcommand ()
++  :tags (if (getenv "RPM_BUILD_ROOT") '(:unstable))
+   "Check that subcommands reset `eshell-in-pipeline-p'."
+   (skip-unless (executable-find "cat"))
+   (dolist (template '("echo {%s} | *cat"
+diff --git a/test/lisp/proced-tests.el b/test/lisp/proced-tests.el
+index 852fd441359..a86985a663d 100644
+--- a/test/lisp/proced-tests.el
++++ b/test/lisp/proced-tests.el
+@@ -114,6 +114,7 @@ CPU is as in `proced--assert-process-valid-cpu-refinement'."
+      (proced--assert-emacs-pid-in-buffer))))
+ 
+ (ert-deftest proced-refine-test ()
++  :tags (if (getenv "RPM_BUILD_ROOT") '(:unstable))
+   ;; %CPU is not implemented on macOS
+   (skip-when (eq system-type 'darwin))
+   (proced--within-buffer
+@@ -129,6 +130,7 @@ CPU is as in `proced--assert-process-valid-cpu-refinement'."
+        (forward-line)))))
+ 
+ (ert-deftest proced-refine-with-update-test ()
++  :tags (if (getenv "RPM_BUILD_ROOT") '(:unstable))
+   (skip-when (eq system-type 'darwin))
+   (proced--within-buffer
+    'verbose

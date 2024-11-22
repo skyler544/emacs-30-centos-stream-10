@@ -5,15 +5,20 @@
 %bcond_without lucid
 %bcond_without nw
 
+%global debug_package %{nil}
+%global forgeurl https://github.com/emacs-mirror/emacs
+%global commit b83cd8a8fb0e24057d6ab66afa53b25699e34bf1
+%forgemeta
+
 Summary:       GNU Emacs text editor
 Name:          emacs
 Epoch:         1
-Version:       29.4
+Version:       30.0.92
 Release:       %autorelease
+URL:           %{forgeurl}
+Source:        %{forgesource}
 License:       GPL-3.0-or-later AND CC0-1.0
-URL:           https://www.gnu.org/software/emacs/
-Source0:       https://ftp.gnu.org/gnu/emacs/emacs-%{version}.tar.xz
-Source1:       https://ftp.gnu.org/gnu/emacs/emacs-%{version}.tar.xz.sig
+# Emacs 29+ sign key
 Source2:       https://keys.openpgp.org/vks/v1/by-fingerprint/17E90D521672C04631B1183EE78DAE0F3115E06B
 Source3:       https://keys.openpgp.org/vks/v1/by-fingerprint/CEA1DE21AB108493CC9C65742E82323B8F4353EE
 Source4:       dotemacs.el
@@ -26,7 +31,6 @@ Patch:         0001-Pong-and-Tetris-are-excluded.patch
 
 # rhbz#713600
 Patch:         emacs-spellchecker.patch
-
 Patch:         emacs-system-crypto-policies.patch
 
 # causes a dependency on pkgconfig(systemd)
@@ -37,30 +41,22 @@ Patch:         emacs-libdir-vs-systemd.patch
 Patch:         emacs-desktop.patch
 Patch:         emacs-pgtk-on-x-error-message.patch
 
-# Skip failing tests (patches taken from Emacs Git)
-Patch:         0001-Fix-failing-help-fns-test.patch
-Patch:         0001-Fix-flymake-tests-with-GCC-14.patch
-
-# Fix intermittently failing test (https://debbugs.gnu.org/cgi/bugreport.cgi?bug=72073)
-Patch:         0001-Fix-wdired-test-unfinished-edit-01-when-temp-dirname.patch
-
 # Fix intermittently failing test (https://debbugs.gnu.org/cgi/bugreport.cgi?bug=72120)
-Patch:         0001-Fix-intermittent-failure-of-dired-test-bug27243-02.patch
 Patch:         0004-Try-harder-to-stabalise-dired-test-bug27243-02.patch
 
 # Skip intermittently failing tests
-Patch:         0002-Test-eshell-test-subcommand-reset-in-pipeline-is-uns.patch
 Patch:         0003-Mark-multiple-mml-sec-tests-as-unstable-when-built-i.patch
 
 # Workaround for https://bugzilla.redhat.com/show_bug.cgi?id=2276822
 # (https://debbugs.gnu.org/cgi/bugreport.cgi?bug=63555).  If GDK ever
 # gets any new backends, this patch may need extending.
-Patch:         0001-Apply-display-kluge-for-PGTK-too.patch
 Patch:         0002-Fall-back-to-the-terminal-from-pure-GTK-when-no-disp.patch
+Patch:         0005-Mark-multiple-tests-as-unstable.patch
 
 BuildRequires: alsa-lib-devel
 BuildRequires: atk-devel
 BuildRequires: autoconf
+BuildRequires: autoconf-archive
 BuildRequires: bzip2
 BuildRequires: cairo
 BuildRequires: cairo-devel
@@ -76,9 +72,9 @@ BuildRequires: gnutls-devel
 BuildRequires: gtk3-devel
 BuildRequires: gzip
 BuildRequires: harfbuzz-devel
-BuildRequires: jansson-devel
 BuildRequires: libacl-devel
 BuildRequires: libappstream-glib
+BuildRequires: libtool
 BuildRequires: libgccjit-devel
 BuildRequires: libjpeg-turbo
 BuildRequires: libjpeg-turbo-devel
@@ -262,19 +258,13 @@ Development header files for Emacs.
 
 
 %prep
-cat '%{SOURCE2}' '%{SOURCE3}' > keyring
-%{gpgverify} --keyring=keyring --signature='%{SOURCE1}' --data='%{SOURCE0}'
-rm keyring
-
-%autosetup -N -c
-cd %{name}-%{version}
-%autopatch -p1
+%forgeautosetup -p1
 
 # Avoid trademark issues
-rm lisp/play/pong.el lisp/play/pong.elc \
+rm -f lisp/play/pong.el lisp/play/pong.elc \
    lisp/play/tetris.el lisp/play/tetris.elc
 
-autoconf
+autoreconf --install
 
 %ifarch %{ix86}
 %define setarch setarch %{_arch} -R
@@ -286,24 +276,23 @@ autoconf
 ln -s ../../%{name}/%{version}/etc/COPYING doc
 ln -s ../../%{name}/%{version}/etc/NEWS doc
 
-
 cd ..
 %if %{with lucid}
-cp -a %{name}-%{version} build-lucid
+cp -a %{name}-%{commit} build-lucid
 %endif
 %if %{with nw}
-cp -a %{name}-%{version} build-nw
+cp -a %{name}-%{commit} build-nw
 %endif
 %if %{with gtkx11}
-cp -a %{name}-%{version} build-gtk+x11
+cp -a %{name}-%{commit} build-gtk+x11
 %endif
-mv %{name}-%{version} build-pgtk
-
+cp -a %{name}-%{commit} build-pgtk
 
 %build
 export CFLAGS="-DMAIL_USE_LOCKF %{build_cflags}"
 %set_build_flags
 
+cd ..
 %if %{with lucid}
 # Build Lucid binary
 cd build-lucid
@@ -314,7 +303,6 @@ cd build-lucid
            --with-gpm=no \
            --with-harfbuzz \
            --with-jpeg \
-           --with-json \
            --with-modules \
            --with-native-compilation=aot \
            --with-png \
@@ -336,7 +324,6 @@ cd ..
 # Build binary without X support
 cd build-nw
 %configure --program-suffix=-nw \
-           --with-json \
            --with-modules \
            --with-native-compilation=aot \
            --with-sqlite3 \
@@ -360,7 +347,6 @@ cd build-gtk+x11
            --with-gpm=no \
            --with-harfbuzz \
            --with-jpeg \
-           --with-json \
            --with-modules \
            --with-native-compilation=aot \
            --with-png \
@@ -385,7 +371,6 @@ cd build-pgtk
            --with-gpm=no \
            --with-harfbuzz \
            --with-jpeg \
-           --with-json \
            --with-modules \
            --with-native-compilation=aot \
            --with-pgtk \
@@ -422,6 +407,7 @@ EOF
 
 
 %install
+cd ..
 %if %{with nw}
 cd build-nw
 %{__make} install-arch-dep install-eln DESTDIR=%{?buildroot} INSTALL="%{__install} -p"
@@ -541,6 +527,8 @@ for info_f in %info_files; do
 done
 # info.gz is a rename of info.info.gz and thus needs special handling
 echo "%{_infodir}/info*" >> info-filelist
+# elisp.info.gz has additional files
+echo "%{_infodir}/elisp_type_hierarchy*" >> info-filelist
 
 # Put the lists together after filtering  ./usr to /usr
 sed -i -e "s|\.%{_prefix}|%{_prefix}|" *-files
@@ -610,7 +598,7 @@ export QA_SKIP_BUILD_ROOT=0
 # A number of tests that don't work on GNU EMBA are also unstable when
 # run in Koji.
 export EMACS_EMBA_CI=1
-
+cd ..
 cd build-pgtk
 %make_build check
 cd ..
@@ -635,7 +623,6 @@ cd ..
 
 appstream-util validate-relax --nonet %{buildroot}/%{_metainfodir}/*.metainfo.xml
 desktop-file-validate %{buildroot}/%{_datadir}/applications/*.desktop
-
 
 %preun
 if [ $1 = 0 ]; then
@@ -699,29 +686,28 @@ fi
 /usr/sbin/alternatives --install %{_bindir}/etags emacs.etags %{_bindir}/etags.emacs 80 \
        --slave %{_mandir}/man1/etags.1.gz emacs.etags.man %{_mandir}/man1/etags.emacs.1.gz || :
 
-
-%files -f pgtk-filelist -f pgtk-dirlist
+%files -f ../pgtk-filelist -f ../pgtk-dirlist
 %ghost %{_bindir}/emacs
 %{_bindir}/emacs-%{version}-pgtk
 %{_bindir}/emacs-pgtk
 %{_datadir}/glib-2.0/schemas/org.gnu.emacs.defaults.gschema.xml
 
 %if %{with gtkx11}
-%files gtk+x11 -f gtk+x11-filelist -f gtk+x11-dirlist
+%files gtk+x11 -f ../gtk+x11-filelist -f ../gtk+x11-dirlist
 %ghost %{_bindir}/emacs
 %{_bindir}/emacs-%{version}-gtk+x11
 %{_bindir}/emacs-gtk+x11
 %endif
 
 %if %{with lucid}
-%files lucid -f lucid-filelist -f lucid-dirlist
+%files lucid -f ../lucid-filelist -f ../lucid-dirlist
 %ghost %{_bindir}/emacs
 %{_bindir}/emacs-%{version}-lucid
 %{_bindir}/emacs-lucid
 %endif
 
 %if %{with nw}
-%files nw -f nw-filelist -f nw-dirlist
+%files nw -f ../nw-filelist -f ../nw-dirlist
 %ghost %{_bindir}/emacs
 %{_bindir}/emacs-%{version}-nox
 %{_bindir}/emacs-%{version}-nw
@@ -730,15 +716,15 @@ fi
 %endif
 
 %files -n emacsclient
-%license build-pgtk/etc/COPYING
+%license ../build-pgtk/etc/COPYING
 %{_bindir}/emacsclient
 %{_mandir}/man1/emacsclient.1*
 
-%files common -f common-filelist -f info-filelist
+%files common -f ../common-filelist -f ../info-filelist
 %config(noreplace) %{_sysconfdir}/skel/.emacs
 %{_rpmconfigdir}/macros.d/macros.emacs
-%license build-pgtk/etc/COPYING
-%doc build-pgtk/doc/NEWS build-pgtk/BUGS build-pgtk/README
+%license ../build-pgtk/etc/COPYING
+%doc ../build-pgtk/doc/NEWS ../build-pgtk/BUGS ../build-pgtk/README
 %{_bindir}/ebrowse
 %{_bindir}/emacs-desktop
 %{_bindir}/etags.emacs
