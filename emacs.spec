@@ -7,13 +7,13 @@
 
 %global debug_package %{nil}
 %global forgeurl https://github.com/emacs-mirror/emacs
-%global commit b83cd8a8fb0e24057d6ab66afa53b25699e34bf1
+%global commit ded77feffface0c167edacf0d807273f3d4878db
 %forgemeta
 
 Summary:       GNU Emacs text editor
 Name:          emacs
 Epoch:         1
-Version:       30.0.92
+Version:       30.0.93
 Release:       %autorelease
 URL:           %{forgeurl}
 Source:        %{forgesource}
