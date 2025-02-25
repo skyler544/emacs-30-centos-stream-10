@@ -7,7 +7,7 @@
 
 %global debug_package %{nil}
 %global forgeurl https://github.com/emacs-mirror/emacs
-%global commit 58c7acb55543bddf4280e90c219ee5023d4898f9
+%global commit 706426f96698fb8e6aeaa1a21c2cac1f76f5851c
 %forgemeta
 
 Summary:       GNU Emacs text editor
@@ -296,7 +296,9 @@ cd ..
 %if %{with lucid}
 # Build Lucid binary
 cd build-lucid
-%configure --program-suffix=-lucid \
+%configure \
+           --disable-gc-mark-trace \
+           --program-suffix=-lucid \
            --with-cairo \
            --with-dbus \
            --with-gif \
@@ -323,7 +325,9 @@ cd ..
 %if %{with nw}
 # Build binary without X support
 cd build-nw
-%configure --program-suffix=-nw \
+%configure \
+           --disable-gc-mark-trace \
+           --program-suffix=-nw \
            --with-modules \
            --with-native-compilation=aot \
            --with-sqlite3 \
@@ -340,7 +344,9 @@ cd ..
 %if %{with gtkx11}
 # Build GTK/X11 binary
 cd build-gtk+x11
-%configure --program-suffix=-gtk+x11 \
+%configure \
+           --disable-gc-mark-trace \
+           --program-suffix=-gtk+x11 \
            --with-cairo \
            --with-dbus \
            --with-gif \
@@ -365,7 +371,9 @@ cd ..
 
 # Build pure GTK binary
 cd build-pgtk
-%configure --with-cairo \
+%configure \
+           --disable-gc-mark-trace \
+           --with-cairo \
            --with-dbus \
            --with-gif \
            --with-gpm=no \
