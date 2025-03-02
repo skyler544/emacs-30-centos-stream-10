@@ -7,7 +7,7 @@
 
 %global debug_package %{nil}
 %global forgeurl https://github.com/emacs-mirror/emacs
-%global commit 6f5c322f5974786290b1b3e68b5a0685ddec3410
+%global commit ae7f65f3f9cbe03608c9920e7f2f82a5a82e62d6
 %forgemeta
 
 Summary:       GNU Emacs text editor
@@ -593,11 +593,13 @@ sed -i -e "s|\.%{native_lisp}|%{native_lisp}|" *-filelist *-dirlist
 
 # remove exec permissions from eln files to prevent the debuginfo extractor from
 # trying to extract debuginfo from them
-find %{buildroot}%{_libdir}/ -name '*eln' -type f | xargs chmod -x
+find %{buildroot}%{native_lisp}/ -name '*.eln' -type f -print0 \
+    | xargs -0 chmod -x
 
 # ensure native files are newer than byte-code files
 # see: https://bugzilla.redhat.com/show_bug.cgi?id=2157979#c11
-find %{buildroot}%{_libdir}/ -name '*eln' -type f | xargs touch
+find %{buildroot}%{native_lisp}/ -name '*.eln' -type f -print0 \
+    | xargs -0 touch
 
 export QA_SKIP_BUILD_ROOT=0
 
