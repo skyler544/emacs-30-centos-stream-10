@@ -7,7 +7,7 @@
 
 %global debug_package %{nil}
 %global forgeurl https://github.com/emacs-mirror/emacs
-%global commit ae7f65f3f9cbe03608c9920e7f2f82a5a82e62d6
+%global commit be4819bd578b696a4692cf7cc1b3d52390a65129
 %forgemeta
 
 Summary:       GNU Emacs text editor
@@ -134,6 +134,43 @@ editor. It contains special code editing features, a scripting language
 the editor.
 }
 
+Provides:      emacs(bin) = %{epoch}:%{version}-%{release}
+Requires:      (emacs-pgtk = %{epoch}:%{version}-%{release} or emacs-gtk+x11 = %{epoch}:%{version}-%{release} or emacs-lucid = %{epoch}:%{version}-%{release} or emacs-nw = %{epoch}:%{version}-%{release})
+
+Suggests:      (emacs-nw if fedora-release-cloud)
+Suggests:      (emacs-nw if fedora-release-container)
+Suggests:      (emacs-nw if fedora-release-coreos)
+Suggests:      (emacs-gtk+x11 if fedora-release-i3)
+Suggests:      (emacs-nw if fedora-release-iot)
+Suggests:      (emacs-gtk+x11 if fedora-release-matecompiz)
+Suggests:      (emacs-pgtk if fedora-release-miraclewm)
+Suggests:      (emacs-pgtk if fedora-release-miraclewm-atomic)
+Suggests:      (emacs-pgtk if fedora-release-mobility)
+Suggests:      (emacs-nw if fedora-release-server)
+Suggests:      (emacs-pgtk if fedora-release-silverblue)
+Suggests:      (emacs-pgtk if fedora-release-sway)
+Suggests:      (emacs-pgtk if fedora-release-sway-atomic)
+Suggests:      (emacs-nw if fedora-release-toolbx)
+Suggests:      (emacs-pgtk if fedora-release-workstation)
+Suggests:      (emacs-gtk+x11 if fedora-release-xfce)
+
+## If you know the best variant for these editions, please fill
+## them in.
+# Suggests:      (emacs- if fedora-release-budgie)
+# Suggests:      (emacs- if fedora-release-budgie-atomic)
+# Suggests:      (emacs- if fedora-release-cinnamon)
+# Suggests:      (emacs- if fedora-release-compneuro)
+# Suggests:      (emacs- if fedora-release-cosmic)
+# Suggests:      (emacs- if fedora-release-cosmic-atomic)
+# Suggests:      (emacs- if fedora-release-designsuite)
+# Suggests:      (emacs- if fedora-release-kde)
+# Suggests:      (emacs- if fedora-release-kde-mobile)
+# Suggests:      (emacs- if fedora-release-kinoite)
+# Suggests:      (emacs- if fedora-release-kinoite-mobile)
+# Suggests:      (emacs- if fedora-release-lxqt)
+# Suggests:      (emacs- if fedora-release-soas)
+# Suggests:      (emacs- if fedora-release-wsl)
+
 %description
 %desc
 
@@ -148,9 +185,7 @@ Requires(preun): /usr/sbin/alternatives
 Requires(posttrans): /usr/sbin/alternatives
 Requires:      emacs-common = %{epoch}:%{version}-%{release}
 Requires:      libpixbufloader-xpm.so%{?marker}
-Provides:      emacs = %{epoch}:%{version}-%{release}
-Provides:      emacs(bin) = %{epoch}:%{version}-%{release}
-Supplements:   ((libwayland-server and emacs-common) unless emacs-nw)
+Supplements:   ((libwayland-server and emacs) unless emacs-nw)
 
 %description pgtk
 %desc
@@ -165,8 +200,8 @@ Requires:      google-noto-sans-mono-vf-fonts
 Requires(preun): /usr/sbin/alternatives
 Requires(posttrans): /usr/sbin/alternatives
 Requires:      emacs-common = %{epoch}:%{version}-%{release}
-Provides:      emacs(bin) = %{epoch}:%{version}-%{release}
-Supplements:   ((xorg-x11-server-Xorg and emacs-common) unless emacs-nw)
+Requires:      libpixbufloader-xpm.so%{?marker}
+Supplements:   ((xorg-x11-server-Xorg and emacs) unless emacs-nw)
 
 %description gtk+x11
 %desc
@@ -182,8 +217,6 @@ Requires:      google-noto-sans-mono-vf-fonts
 Requires(preun): /usr/sbin/alternatives
 Requires(posttrans): /usr/sbin/alternatives
 Requires:      emacs-common = %{epoch}:%{version}-%{release}
-Provides:      emacs = %{epoch}:%{version}-%{release}
-Provides:      emacs(bin) = %{epoch}:%{version}-%{release}
 
 %description lucid
 %desc
@@ -198,8 +231,6 @@ Summary:       GNU Emacs text editor with no window system support
 Requires(preun): /usr/sbin/alternatives
 Requires(posttrans): /usr/sbin/alternatives
 Requires:      emacs-common = %{epoch}:%{version}-%{release}
-Provides:      emacs = %{epoch}:%{version}-%{release}
-Provides:      emacs(bin) = %{epoch}:%{version}-%{release}
 Provides:      emacs-nox = %{epoch}:%{version}-%{release}
 Obsoletes:     emacs-nox < 1:30
 
@@ -233,7 +264,7 @@ Requires:      /usr/bin/readlink
 Requires:      %{name}-filesystem
 Requires:      emacsclient
 Requires:      libgccjit
-Recommends:    emacs(bin)
+Recommends:    emacs = %{epoch}:%{version}-%{release}
 Recommends:    enchant2
 Recommends:    info
 Provides:      %{name}-el = %{epoch}:%{version}-%{release}
@@ -687,6 +718,8 @@ fi
 %posttrans common
 /usr/sbin/alternatives --install %{_bindir}/etags emacs.etags %{_bindir}/etags.emacs 80 \
        --slave %{_mandir}/man1/etags.1.gz emacs.etags.man %{_mandir}/man1/etags.emacs.1.gz || :
+
+%files
 
 %files pgtk -f ../pgtk-filelist -f ../pgtk-dirlist
 %ghost %{_bindir}/emacs
