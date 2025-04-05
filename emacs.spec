@@ -230,7 +230,7 @@ Recommends:    info
 Provides:      %{name}-el = %{epoch}:%{version}-%{release}
 Obsoletes:     emacs-el < 1:24.3-29
 # transient.el is provided by emacs in lisp/transient.el
-Provides:      emacs-transient = 0.3.7
+Provides:      emacs-transient = 0.7.2.2
 # the existing emacs-transient package is obsoleted by emacs 28+, last package
 # version as of the release of emacs 28.1 is obsoleted
 Obsoletes:     emacs-transient < 0.3.0-4
