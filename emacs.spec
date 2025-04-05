@@ -148,7 +148,6 @@ Requires(preun): /usr/sbin/alternatives
 Requires(posttrans): /usr/sbin/alternatives
 Requires:      emacs-common = %{epoch}:%{version}-%{release}
 Requires:      libpixbufloader-xpm.so%{?marker}
-Obsoletes:     emacs < %{epoch}:30.1-15
 Provides:      emacs = %{epoch}:%{version}-%{release}
 Provides:      emacs(bin) = %{epoch}:%{version}-%{release}
 Supplements:   ((libwayland-server and emacs-common) unless emacs-nw)
@@ -183,6 +182,7 @@ Requires:      google-noto-sans-mono-vf-fonts
 Requires(preun): /usr/sbin/alternatives
 Requires(posttrans): /usr/sbin/alternatives
 Requires:      emacs-common = %{epoch}:%{version}-%{release}
+Provides:      emacs = %{epoch}:%{version}-%{release}
 Provides:      emacs(bin) = %{epoch}:%{version}-%{release}
 
 %description lucid
@@ -198,6 +198,7 @@ Summary:       GNU Emacs text editor with no window system support
 Requires(preun): /usr/sbin/alternatives
 Requires(posttrans): /usr/sbin/alternatives
 Requires:      emacs-common = %{epoch}:%{version}-%{release}
+Provides:      emacs = %{epoch}:%{version}-%{release}
 Provides:      emacs(bin) = %{epoch}:%{version}-%{release}
 Provides:      emacs-nox = %{epoch}:%{version}-%{release}
 Obsoletes:     emacs-nox < 1:30
