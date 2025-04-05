@@ -40,8 +40,8 @@ Patch:         emacs-system-crypto-policies.patch
 # => remove it if we stop using this patch
 Patch:         emacs-libdir-vs-systemd.patch
 
-# Avoid using the pure GTK build on X11 where it is unsupported:
-Patch:         emacs-desktop.patch
+# Hint what to do to avoid using the pure GTK build on X11, where it is
+# unsupported:
 Patch:         emacs-pgtk-on-x-error-message.patch
 
 # Fix intermittently failing test (https://debbugs.gnu.org/cgi/bugreport.cgi?bug=72120)
@@ -696,10 +696,16 @@ fi
 
 %preun common
 if [ $1 = 0 ]; then
+  /usr/sbin/alternatives --remove emacs %{_bindir}/emacs-desktop || :
   /usr/sbin/alternatives --remove emacs.etags %{_bindir}/etags.emacs || :
 fi
 
 %posttrans common
+/usr/sbin/alternatives --install %{_bindir}/emacs \
+                                 emacs \
+                                 %{_bindir}/emacs-desktop \
+                                 85 \
+    || :
 /usr/sbin/alternatives --install %{_bindir}/etags emacs.etags %{_bindir}/etags.emacs 80 \
        --slave %{_mandir}/man1/etags.1.gz emacs.etags.man %{_mandir}/man1/etags.emacs.1.gz || :
 
@@ -744,6 +750,7 @@ fi
 %{_rpmconfigdir}/macros.d/macros.emacs
 %license ../build-pgtk/etc/COPYING
 %doc ../build-pgtk/doc/NEWS ../build-pgtk/BUGS ../build-pgtk/README
+%ghost %{_bindir}/emacs
 %{_bindir}/ebrowse
 %{_bindir}/emacs-desktop
 %{_bindir}/etags.emacs
