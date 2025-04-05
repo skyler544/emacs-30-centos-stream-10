@@ -56,6 +56,11 @@ Patch:         0003-Mark-multiple-mml-sec-tests-as-unstable-when-built-i.patch
 Patch:         0002-Fall-back-to-the-terminal-from-pure-GTK-when-no-disp.patch
 Patch:         0005-Mark-multiple-tests-as-unstable.patch
 
+# Don't override StartupWMClass.  The overriding value doesn't work on
+# Wayland, and the default should be fine.
+# https://debbugs.gnu.org/cgi/bugreport.cgi?bug=49505#67
+Patch:         0001-Don-t-specify-StartupWMClass-in-emacs.desktop.patch
+
 BuildRequires: alsa-lib-devel
 BuildRequires: atk-devel
 BuildRequires: autoconf
