@@ -1,0 +1,30 @@
+#!/usr/bin/emacs -x
+
+;; This file is not part of GNU Emacs.
+
+;;; Commentary:
+
+;; Inspect Emacs Lisp files for usage of Tree-sitter parsers, and
+;; generate RPM Recommends for those.
+
+;;; Code:
+
+(setq jka-compr-verbose nil)
+
+(condition-case nil
+    (while (setq filename (read-from-minibuffer ""))
+      (when (string-match-p "\\.el\\(\\.gz\\)?$" filename)
+        (with-temp-buffer
+          (insert-file-contents filename)
+          (setq parsers ())
+          (while
+              (search-forward-regexp "(treesit-\\(parser-create\\|ready-p\\) '"
+                                     nil t)
+            (add-to-list 'parsers (thing-at-point 'symbol t)))
+          (when parsers
+            (princ (concat ";" filename "\n"))
+            (dolist (parser parsers)
+              (princ (concat "tree-sitter(" parser ")" "\n")))))))
+  (end-of-file nil))
+
+;;; emacs_lisp.rec ends here
