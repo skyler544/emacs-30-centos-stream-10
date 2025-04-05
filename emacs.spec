@@ -686,7 +686,7 @@ if [ $1 = 0 ]; then
 fi
 
 %posttrans nw
-/usr/sbin/alternatives --install %{_bindir}/emacs emacs %{_bindir}/emacs-nw 70 || :
+/usr/sbin/alternatives --install %{_bindir}/emacs emacs %{_bindir}/emacs-nw 65 || :
 # The preun scriptlet of packages before 29.4-5 will remove this symlink
 # after it has been installed, so we may need to put it back:
 if [ $1 = 2 -a ! -h %{_bindir}/emacs-nw ]; then
