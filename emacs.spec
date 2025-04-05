@@ -224,7 +224,7 @@ Requires:      /usr/bin/readlink
 Requires:      %{name}-filesystem
 Requires:      emacsclient
 Requires:      libgccjit
-Recommends:    (emacs or emacs-gtk+x11 or emacs-lucid or emacs-nw)
+Recommends:    emacs(bin)
 Recommends:    enchant2
 Recommends:    info
 Provides:      %{name}-el = %{epoch}:%{version}-%{release}
