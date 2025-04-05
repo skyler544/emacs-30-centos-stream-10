@@ -616,10 +616,12 @@ desktop-file-validate %{buildroot}/%{_datadir}/applications/*.desktop
 
 %preun
 if [ $1 = 0 ]; then
+  /usr/sbin/alternatives --remove emacs %{_bindir}/emacs-desktop || :
   /usr/sbin/alternatives --remove emacs %{_bindir}/emacs-pgtk || :
 fi
 
 %posttrans
+/usr/sbin/alternatives --install %{_bindir}/emacs emacs %{_bindir}/emacs-desktop 85 || :
 /usr/sbin/alternatives --install %{_bindir}/emacs emacs %{_bindir}/emacs-pgtk 80 || :
 
 %if %{with lucid}
@@ -669,21 +671,16 @@ fi
 
 %preun common
 if [ $1 = 0 ]; then
-  /usr/sbin/alternatives --remove emacs %{_bindir}/emacs-desktop || :
   /usr/sbin/alternatives --remove emacs.etags %{_bindir}/etags.emacs || :
 fi
 
 %posttrans common
-/usr/sbin/alternatives --install %{_bindir}/emacs \
-                                 emacs \
-                                 %{_bindir}/emacs-desktop \
-                                 85 \
-    || :
 /usr/sbin/alternatives --install %{_bindir}/etags emacs.etags %{_bindir}/etags.emacs 80 \
        --slave %{_mandir}/man1/etags.1.gz emacs.etags.man %{_mandir}/man1/etags.emacs.1.gz || :
 
 %files -f ../pgtk-filelist -f ../pgtk-dirlist
 %ghost %{_bindir}/emacs
+%{_bindir}/emacs-desktop
 %{_bindir}/emacs-%{version}-pgtk
 %{_bindir}/emacs-pgtk
 %{_datadir}/glib-2.0/schemas/org.gnu.emacs.defaults.gschema.xml
@@ -723,9 +720,7 @@ fi
 %{_rpmconfigdir}/macros.d/macros.emacs
 %license ../build-pgtk/etc/COPYING
 %doc ../build-pgtk/doc/NEWS ../build-pgtk/BUGS ../build-pgtk/README
-%ghost %{_bindir}/emacs
 %{_bindir}/ebrowse
-%{_bindir}/emacs-desktop
 %{_bindir}/etags.emacs
 %{_bindir}/gctags
 %{_datadir}/applications/emacs.desktop
