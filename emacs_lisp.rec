@@ -13,12 +13,16 @@
 
 (condition-case nil
     (while (setq filename (read-from-minibuffer ""))
-      (when (string-match-p "\\.el\\(\\.gz\\)?$" filename)
+      (when (string-match-p (rx ".el" (optional ".gz") line-end)
+                            filename)
         (with-temp-buffer
           (insert-file-contents filename)
           (setq parsers ())
           (while
-              (search-forward-regexp "(treesit-\\(parser-create\\|ready-p\\) '"
+              (search-forward-regexp (rx "(" (or "treesit-ensure-installed"
+                                                 "treesit-parser-create"
+                                                 "treesit-ready-p")
+                                         " '")
                                      nil t)
             (add-to-list 'parsers (thing-at-point 'symbol t)))
           (when parsers

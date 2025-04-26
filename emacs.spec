@@ -7,7 +7,7 @@
 
 %global debug_package %{nil}
 %global forgeurl https://github.com/emacs-mirror/emacs
-%global commit be4819bd578b696a4692cf7cc1b3d52390a65129
+%global commit 1136aed6dc5f8a2b7fad78bcd5dcd7eeba863e14
 %forgemeta
 
 Summary:       GNU Emacs text editor
