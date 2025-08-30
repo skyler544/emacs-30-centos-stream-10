@@ -9,7 +9,8 @@
 
 ;;; Code:
 
-(setq jka-compr-verbose nil)
+(setq backtrace-on-error-noninteractive nil
+      jka-compr-verbose nil)
 
 (condition-case nil
     (while (setq filename (read-from-minibuffer ""))
