@@ -247,9 +247,7 @@ support, for running on a terminal only.
 
 %package -n emacsclient
 Summary:       Remotely control GNU Emacs
-
-# This is a moving target whilst Fedora 40 is still receivng updates:
-Conflicts:     emacs-common < %{epoch}:%{version}-%{release}
+Conflicts:     emacs-common < 1:29.4-12
 
 %description -n emacsclient
 %desc
