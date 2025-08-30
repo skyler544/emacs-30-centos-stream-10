@@ -13,8 +13,8 @@
 
 (condition-case nil
     (while (setq filename (read-from-minibuffer ""))
-      (when (string-match-p (rx ".el" (optional ".gz") line-end)
-                            filename)
+      (when (and (string-match-p (rx ".el" (optional ".gz") line-end)
+                            filename) (not (file-symlink-p filename)))
         (with-temp-buffer
           (insert-file-contents filename)
           (setq parsers ())
