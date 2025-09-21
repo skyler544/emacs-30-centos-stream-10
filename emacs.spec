@@ -1,9 +1,6 @@
 # This file is encoded in UTF-8.  -*- coding: utf-8 -*-
 
 %bcond gpm %[!(0%{?rhel} >= 10)]
-%bcond_without gtkx11
-%bcond_without lucid
-%bcond_without nw
 
 %global debug_package %{nil}
 %global forgeurl https://github.com/emacs-mirror/emacs
@@ -135,42 +132,7 @@ the editor.
 }
 
 Provides:      emacs(bin) = %{epoch}:%{version}-%{release}
-Requires:      (emacs-pgtk = %{epoch}:%{version}-%{release} or emacs-gtk+x11 = %{epoch}:%{version}-%{release} or emacs-lucid = %{epoch}:%{version}-%{release} or emacs-nw = %{epoch}:%{version}-%{release})
-
-Suggests:      (emacs-nw if fedora-release-identity-basic)
-Suggests:      (emacs-nw if fedora-release-cloud)
-Suggests:      (emacs-nw if fedora-release-container)
-Suggests:      (emacs-nw if fedora-release-coreos)
-Suggests:      (emacs-gtk+x11 if fedora-release-i3)
-Suggests:      (emacs-nw if fedora-release-iot)
-Suggests:      (emacs-gtk+x11 if fedora-release-matecompiz)
-Suggests:      (emacs-pgtk if fedora-release-miraclewm)
-Suggests:      (emacs-pgtk if fedora-release-miraclewm-atomic)
-Suggests:      (emacs-pgtk if fedora-release-mobility)
-Suggests:      (emacs-nw if fedora-release-server)
-Suggests:      (emacs-pgtk if fedora-release-silverblue)
-Suggests:      (emacs-pgtk if fedora-release-sway)
-Suggests:      (emacs-pgtk if fedora-release-sway-atomic)
-Suggests:      (emacs-nw if fedora-release-toolbx)
-Suggests:      (emacs-pgtk if fedora-release-workstation)
-Suggests:      (emacs-gtk+x11 if fedora-release-xfce)
-
-## If you know the best variant for these editions, please fill
-## them in.
-# Suggests:      (emacs- if fedora-release-budgie)
-# Suggests:      (emacs- if fedora-release-budgie-atomic)
-# Suggests:      (emacs- if fedora-release-cinnamon)
-# Suggests:      (emacs- if fedora-release-compneuro)
-# Suggests:      (emacs- if fedora-release-cosmic)
-# Suggests:      (emacs- if fedora-release-cosmic-atomic)
-# Suggests:      (emacs- if fedora-release-designsuite)
-# Suggests:      (emacs- if fedora-release-kde)
-# Suggests:      (emacs- if fedora-release-kde-mobile)
-# Suggests:      (emacs- if fedora-release-kinoite)
-# Suggests:      (emacs- if fedora-release-kinoite-mobile)
-# Suggests:      (emacs- if fedora-release-lxqt)
-# Suggests:      (emacs- if fedora-release-soas)
-# Suggests:      (emacs- if fedora-release-wsl)
+Requires:      emacs-pgtk = %{epoch}:%{version}-%{release}
 
 %description
 %desc
@@ -185,61 +147,12 @@ Requires:      google-noto-sans-mono-vf-fonts
 Requires(preun): /usr/sbin/alternatives
 Requires(posttrans): /usr/sbin/alternatives
 Requires:      emacs-common = %{epoch}:%{version}-%{release}
-Requires:      libpixbufloader-xpm.so%{?marker}
 Supplements:   ((libwayland-server and emacs) unless emacs-nw)
 
 %description pgtk
 %desc
 This package provides an emacs-pgtk binary with support for Wayland, using the
 GTK toolkit.
-
-
-%if %{with gtkx11}
-%package gtk+x11
-Summary:       GNU Emacs text editor with GTK toolkit for X11
-Requires:      google-noto-sans-mono-vf-fonts
-Requires(preun): /usr/sbin/alternatives
-Requires(posttrans): /usr/sbin/alternatives
-Requires:      emacs-common = %{epoch}:%{version}-%{release}
-Requires:      libpixbufloader-xpm.so%{?marker}
-Supplements:   ((xorg-x11-server-Xorg and emacs) unless emacs-nw)
-
-%description gtk+x11
-%desc
-This package provides an emacs-gtk+x11 binary with support for the X
-Window System, using the GTK toolkit.
-%endif
-
-
-%if %{with lucid}
-%package lucid
-Summary:       GNU Emacs text editor with Lucid toolkit for X11
-Requires:      google-noto-sans-mono-vf-fonts
-Requires(preun): /usr/sbin/alternatives
-Requires(posttrans): /usr/sbin/alternatives
-Requires:      emacs-common = %{epoch}:%{version}-%{release}
-
-%description lucid
-%desc
-This package provides an emacs-lucid binary with support for the X
-Window System, using the Lucid toolkit.
-%endif
-
-
-%if %{with nw}
-%package nw
-Summary:       GNU Emacs text editor with no window system support
-Requires(preun): /usr/sbin/alternatives
-Requires(posttrans): /usr/sbin/alternatives
-Requires:      emacs-common = %{epoch}:%{version}-%{release}
-Provides:      emacs-nox = %{epoch}:%{version}-%{release}
-Obsoletes:     emacs-nox < 1:30
-
-%description nw
-%desc
-This package provides an emacs-nw binary without graphical display
-support, for running on a terminal only.
-%endif
 
 
 %package -n emacsclient
@@ -318,15 +231,6 @@ ln -s ../../%{name}/%{version}/etc/COPYING doc
 ln -s ../../%{name}/%{version}/etc/NEWS doc
 
 cd ..
-%if %{with lucid}
-cp -a %{name}-%{commit} build-lucid
-%endif
-%if %{with nw}
-cp -a %{name}-%{commit} build-nw
-%endif
-%if %{with gtkx11}
-cp -a %{name}-%{commit} build-gtk+x11
-%endif
 cp -a %{name}-%{commit} build-pgtk
 
 %build
@@ -334,82 +238,6 @@ export CFLAGS="-DMAIL_USE_LOCKF %{build_cflags}"
 %set_build_flags
 
 cd ..
-%if %{with lucid}
-# Build Lucid binary
-cd build-lucid
-%configure \
-           --disable-gc-mark-trace \
-           --program-suffix=-lucid \
-           --with-cairo \
-           --with-dbus \
-           --with-gif \
-           --with-gpm=no \
-           --with-harfbuzz \
-           --with-jpeg \
-           --with-modules \
-           --with-native-compilation=aot \
-           --with-png \
-           --with-rsvg \
-           --with-sqlite3 \
-           --with-tiff \
-           --with-tree-sitter \
-           --with-webp \
-           --with-x-toolkit=lucid \
-           --with-xft \
-           --with-xinput2 \
-           --with-xpm
-%{setarch} %make_build bootstrap
-%{setarch} %make_build
-cd ..
-%endif
-
-%if %{with nw}
-# Build binary without X support
-cd build-nw
-%configure \
-           --disable-gc-mark-trace \
-           --program-suffix=-nw \
-           --with-modules \
-           --with-native-compilation=aot \
-           --with-sqlite3 \
-           --with-tree-sitter \
-%if %{without gpm}
-           --with-gpm=no \
-%endif
-           --with-x=no
-%{setarch} %make_build bootstrap
-%{setarch} %make_build
-cd ..
-%endif
-
-%if %{with gtkx11}
-# Build GTK/X11 binary
-cd build-gtk+x11
-%configure \
-           --disable-gc-mark-trace \
-           --program-suffix=-gtk+x11 \
-           --with-cairo \
-           --with-dbus \
-           --with-gif \
-           --with-gpm=no \
-           --with-harfbuzz \
-           --with-jpeg \
-           --with-modules \
-           --with-native-compilation=aot \
-           --with-png \
-           --with-rsvg \
-           --with-sqlite3 \
-           --with-tiff \
-           --with-tree-sitter \
-           --with-webp \
-           --with-x-toolkit=gtk3 \
-           --with-xinput2 \
-           --with-xpm
-%{setarch} %make_build bootstrap
-%{setarch} %make_build
-cd ..
-%endif
-
 # Build pure GTK binary
 cd build-pgtk
 %configure \
@@ -428,8 +256,7 @@ cd build-pgtk
            --with-sqlite3 \
            --with-tiff \
            --with-tree-sitter \
-           --with-webp \
-           --with-xpm
+           --with-webp
 %{setarch} %make_build bootstrap
 %{setarch} %make_build
 cd ..
@@ -457,24 +284,6 @@ EOF
 
 %install
 cd ..
-%if %{with nw}
-cd build-nw
-%{__make} install-arch-dep install-eln DESTDIR=%{?buildroot} INSTALL="%{__install} -p"
-cd ..
-%endif
-
-%if %{with lucid}
-cd build-lucid
-%{__make} install-arch-dep install-eln DESTDIR=%{?buildroot} INSTALL="%{__install} -p"
-cd ..
-%endif
-
-%if %{with gtkx11}
-cd build-gtk+x11
-%{__make} install-arch-dep install-eln DESTDIR=%{?buildroot} INSTALL="%{__install} -p"
-cd ..
-%endif
-
 cd build-pgtk
 %make_install
 cd ..
@@ -482,19 +291,6 @@ cd ..
 # Do not compress the files which implement compression itself (#484830)
 gunzip %{buildroot}%{_datadir}/emacs/%{version}/lisp/jka-compr.el.gz
 gunzip %{buildroot}%{_datadir}/emacs/%{version}/lisp/jka-cmpr-hook.el.gz
-
-# Remove duplicate files with suffixed names
-%if %{with nw} || %{with lucid} || %{with gtkx11}
-find %{buildroot} \
-     -type f \
-     ! -name emacs-%{version}-gtk+x11 ! -name emacs-gtk+x11 \
-     ! -name emacs-%{version}-lucid   ! -name emacs-lucid \
-     ! -name emacs-%{version}-nw      ! -name emacs-nw \
-     -regextype posix-extended \
-     -regex '.*-(gtk\+x11|lucid|nw)((-mail)?\.[^/]+)?$' \
-     -print \
-     -delete
-%endif
 
 # Rename the emacs binary to indicate it's a "pure GTK" build
 mv %{buildroot}%{_bindir}/emacs-%{version} %{buildroot}%{_bindir}/emacs-%{version}-pgtk
@@ -601,39 +397,6 @@ rm %{buildroot}%{_datadir}/icons/hicolor/scalable/mimetypes/emacs-document23.svg
 echo "%{emacs_libexecdir}/emacs-$(./build-pgtk/src/emacs --fingerprint).pdmp" \
      >> pgtk-filelist
 
-%if %{with gtkx11}
-(TOPDIR=${PWD}
- cd %{buildroot}
- find ".%{native_lisp}/$(ls $TOPDIR/build-gtk+x11/native-lisp)" \
-      \( -type f -name '*eln' -fprintf "$TOPDIR/gtk+x11-filelist" "%%%%attr(755,-,-) %%p\n" \) \
-      -o \( -type d -fprintf "$TOPDIR/gtk+x11-dirlist" "%%%%dir %%p\n" \)
-)
-echo "%{emacs_libexecdir}/emacs-$(./build-gtk+x11/src/emacs --fingerprint).pdmp" \
-     >> gtk+x11-filelist
-%endif
-
-%if %{with lucid}
-(TOPDIR=${PWD}
- cd %{buildroot}
- find ".%{native_lisp}/$(ls $TOPDIR/build-lucid/native-lisp)" \
-      \( -type f -name '*eln' -fprintf "$TOPDIR/lucid-filelist" "%%%%attr(755,-,-) %%p\n" \) \
-      -o \( -type d -fprintf "$TOPDIR/lucid-dirlist" "%%%%dir %%p\n" \)
-)
-echo "%{emacs_libexecdir}/emacs-$(./build-lucid/src/emacs --fingerprint).pdmp" \
-     >> lucid-filelist
-%endif
-
-%if %{with nw}
-(TOPDIR=${PWD}
- cd %{buildroot}
- find ".%{native_lisp}/$(ls $TOPDIR/build-nw/native-lisp)" \
-      \( -type f -name '*eln' -fprintf "$TOPDIR/nw-filelist" "%%%%attr(755,-,-) %%p\n" \) \
-      -o \( -type d -fprintf "$TOPDIR/nw-dirlist" "%%%%dir %%p\n" \)
-)
-echo "%{emacs_libexecdir}/emacs-$(./build-nw/src/emacs --fingerprint).pdmp" \
-     >> nw-filelist
-%endif
-
 # remove leading . from filelists
 sed -i -e "s|\.%{native_lisp}|%{native_lisp}|" *-filelist *-dirlist
 
@@ -664,51 +427,6 @@ fi
 /usr/sbin/alternatives --install %{_bindir}/emacs emacs %{_bindir}/emacs-desktop 85 || :
 /usr/sbin/alternatives --install %{_bindir}/emacs emacs %{_bindir}/emacs-pgtk 80 || :
 
-%if %{with lucid}
-%preun lucid
-if [ $1 = 0 ]; then
-  /usr/sbin/alternatives --remove emacs %{_bindir}/emacs-lucid || :
-fi
-
-%posttrans lucid
-/usr/sbin/alternatives --install %{_bindir}/emacs emacs %{_bindir}/emacs-lucid 70 || :
-# The preun scriptlet of packages before 29.4-5 will remove this symlink
-# after it has been installed, so we may need to put it back:
-if [ $1 = 2 -a ! -h %{_bindir}/emacs-lucid ]; then
-    ln -s emacs-%{version}-lucid %{_bindir}/emacs-lucid
-fi
-%endif
-
-%if %{with gtkx11}
-%preun gtk+x11
-if [ $1 = 0 ]; then
-  /usr/sbin/alternatives --remove emacs %{_bindir}/emacs-gtk+x11 || :
-fi
-
-%posttrans gtk+x11
-/usr/sbin/alternatives --install %{_bindir}/emacs emacs %{_bindir}/emacs-gtk+x11 75 || :
-# The preun scriptlet of packages before 29.4-5 will remove this symlink
-# after it has been installed, so we may need to put it back:
-if [ $1 = 2 -a ! -h %{_bindir}/emacs-gtk+x11 ]; then
-    ln -s emacs-%{version}-gtk+x11 %{_bindir}/emacs-gtk+x11
-fi
-%endif
-
-%if %{with nw}
-%preun nw
-if [ $1 = 0 ]; then
-  /usr/sbin/alternatives --remove emacs %{_bindir}/emacs-nw || :
-fi
-
-%posttrans nw
-/usr/sbin/alternatives --install %{_bindir}/emacs emacs %{_bindir}/emacs-nw 65 || :
-# The preun scriptlet of packages before 29.4-5 will remove this symlink
-# after it has been installed, so we may need to put it back:
-if [ $1 = 2 -a ! -h %{_bindir}/emacs-nw ]; then
-    ln -s emacs-%{version}-nw %{_bindir}/emacs-nw
-fi
-%endif
-
 %preun common
 if [ $1 = 0 ]; then
   /usr/sbin/alternatives --remove emacs.etags %{_bindir}/etags.emacs || :
@@ -726,29 +444,6 @@ fi
 %{_bindir}/emacs-%{version}-pgtk
 %{_bindir}/emacs-pgtk
 %{_datadir}/glib-2.0/schemas/org.gnu.emacs.defaults.gschema.xml
-
-%if %{with gtkx11}
-%files gtk+x11 -f ../gtk+x11-filelist -f ../gtk+x11-dirlist
-%ghost %{_bindir}/emacs
-%{_bindir}/emacs-%{version}-gtk+x11
-%{_bindir}/emacs-gtk+x11
-%endif
-
-%if %{with lucid}
-%files lucid -f ../lucid-filelist -f ../lucid-dirlist
-%ghost %{_bindir}/emacs
-%{_bindir}/emacs-%{version}-lucid
-%{_bindir}/emacs-lucid
-%endif
-
-%if %{with nw}
-%files nw -f ../nw-filelist -f ../nw-dirlist
-%ghost %{_bindir}/emacs
-%{_bindir}/emacs-%{version}-nox
-%{_bindir}/emacs-%{version}-nw
-%{_bindir}/emacs-nox
-%{_bindir}/emacs-nw
-%endif
 
 %files -n emacsclient
 %license ../build-pgtk/etc/COPYING
