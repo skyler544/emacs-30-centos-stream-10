@@ -80,7 +80,7 @@ BuildRequires: libtool
 BuildRequires: libgccjit-devel
 BuildRequires: libjpeg-turbo
 BuildRequires: libjpeg-turbo-devel
-BuildRequires: libotf-devel
+BuildRequires: libotf
 BuildRequires: libpng-devel
 BuildRequires: librsvg2-devel
 BuildRequires: libselinux-devel
@@ -88,7 +88,7 @@ BuildRequires: libtiff-devel
 BuildRequires: libtree-sitter-devel
 BuildRequires: libwebp-devel
 BuildRequires: libxml2-devel
-BuildRequires: m17n-lib-devel
+BuildRequires: m17n-lib
 BuildRequires: make
 BuildRequires: ncurses-devel
 BuildRequires: sqlite-devel
